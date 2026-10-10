@@ -1,0 +1,45 @@
+import { randomUUID } from 'node:crypto';
+import { test, expect, registerAccount, signIn, backendSnapshot, backendMutation, openCheckIn, today } from './helpers';
+
+test('a stale real-device write requires explicit keep or discard and never overwrites silently', async ({ app, secondDevice }, testInfo) => {
+  const account = await registerAccount(app, testInfo, 'conflict');
+  await signIn(secondDevice, account);
+  const date = await today(secondDevice);
+  let before = await backendSnapshot(app, account.token);
+  await openCheckIn(secondDevice);
+  let dialog = secondDevice.getByRole('dialog');
+  await dialog.getByLabel('Weight (kg)', { exact: true }).fill('60');
+  await dialog.getByLabel('Notes', { exact: true }).fill('Device B draft I explicitly keep');
+  const savedOnA = await backendMutation(app, account.token, before, 'saveCheckIn', { id: randomUUID(), date, weight: 59, notes: 'Device A saved record' });
+  expect(savedOnA.status()).toBe(200);
+  const conflict = secondDevice.waitForResponse(response => new URL(response.url()).pathname === '/api/v1/mutations' && response.status() === 409);
+  await dialog.getByRole('button', { name: 'Save Check-in', exact: true }).click();
+  const response = await conflict;
+  expect((await response.json()).code).toBe('revision_conflict');
+  expect((await backendSnapshot(app, account.token)).checkIns[0].notes).toBe('Device A saved record');
+  await secondDevice.getByRole('button', { name: 'Review Conflict', exact: true }).click();
+  await secondDevice.getByRole('dialog', { name: 'Sync Conflict', exact: true }).getByRole('button', { name: 'Keep My Changes', exact: true }).click();
+  await expect.poll(async () => (await backendSnapshot(app, account.token)).checkIns[0]?.notes).toBe('Device B draft I explicitly keep');
+  expect((await backendSnapshot(app, account.token)).weights).toHaveLength(1);
+
+  await secondDevice.reload();
+  await openCheckIn(secondDevice);
+  dialog = secondDevice.getByRole('dialog');
+  await dialog.getByLabel('Weight (kg)', { exact: true }).fill('62');
+  await dialog.getByLabel('Notes', { exact: true }).fill('Device B draft I explicitly discard');
+  before = await backendSnapshot(app, account.token);
+  const authoritativeId = before.checkIns[0].id;
+  const newer = await backendMutation(app, account.token, before, 'saveCheckIn', { id: authoritativeId, date, weight: 61, notes: 'Newer saved record from device A' });
+  expect(newer.status()).toBe(200);
+  const secondConflict = secondDevice.waitForResponse(result => new URL(result.url()).pathname === '/api/v1/mutations' && result.status() === 409);
+  await dialog.getByRole('button', { name: 'Save Check-in', exact: true }).click();
+  await secondConflict;
+  await secondDevice.getByRole('button', { name: 'Review Conflict', exact: true }).click();
+  await secondDevice.getByRole('dialog', { name: 'Sync Conflict', exact: true }).getByRole('button', { name: 'Use Latest Saved Data', exact: true }).click();
+  await expect.poll(async () => (await backendSnapshot(app, account.token)).checkIns[0]?.notes).toBe('Newer saved record from device A');
+  await secondDevice.reload();
+  await openCheckIn(secondDevice);
+  await expect(secondDevice.getByRole('dialog').getByLabel('Weight (kg)', { exact: true })).toHaveValue('61');
+  await expect(secondDevice.getByRole('dialog').getByLabel('Notes', { exact: true })).toHaveValue('Newer saved record from device A');
+  expect((await backendSnapshot(app, account.token)).checkIns).toHaveLength(1);
+});

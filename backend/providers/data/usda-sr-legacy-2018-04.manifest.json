@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "importerVersion": "usda-sr-legacy-v1",
+  "dataset": "USDA FoodData Central SR Legacy",
+  "release": "SR Legacy April 2018",
+  "releaseDate": "2018-04",
+  "foodPublicationDates": [
+    "2019-04-01"
+  ],
+  "downloadURL": "https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_sr_legacy_food_csv_2018-04.zip",
+  "downloadPageURL": "https://fdc.nal.usda.gov/download-datasets/",
+  "fieldDefinitionsURL": "https://fdc.nal.usda.gov/docs/Download_Field_Descriptions_Oct2020.pdf",
+  "license": "CC0-1.0",
+  "licenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "licenseEvidenceURL": "https://fdc.nal.usda.gov/api-guide/",
+  "archiveSha256": "b80817294b8850530aaedf2e515c02593b1824f763a0ff356e5c2081643e6fd0",
+  "archiveBytes": 6074592,
+  "catalogueSha256": "8bd98ec521817eed325107db87f057fc2c6ecdd0da6a21cb1f94253c70b37ffb",
+  "sourceRecordCount": 7793,
+  "recordCount": 7793,
+  "skippedRecords": {},
+  "serving": "100 g",
+  "nutrients": [
+    {
+      "field": "calories",
+      "id": 1008,
+      "name": "Energy",
+      "unit": "KCAL"
+    },
+    {
+      "field": "protein",
+      "id": 1003,
+      "name": "Protein",
+      "unit": "G"
+    },
+    {
+      "field": "carbs",
+      "id": 1005,
+      "name": "Carbohydrate, by difference",
+      "unit": "G"
+    },
+    {
+      "field": "fat",
+      "id": 1004,
+      "name": "Total lipid (fat)",
+      "unit": "G"
+    }
+  ],
+  "selectionPolicy": "All SR Legacy records with unique FDC IDs, valid descriptions, and complete finite nonnegative source Energy(1008,kcal), Protein(1003,g), Carbohydrate by difference(1005,g), Total lipid(1004,g) per100g; no calculated or invented missing values",
+  "members": [
+    {
+      "name": "food.csv",
+      "sha256": "de8b0390058db4f102368c9fbdfde144790b480ff4cb0507c0e060ef99805dee"
+    },
+    {
+      "name": "food_nutrient.csv",
+      "sha256": "6d07e6fc062b09750c4d95112be5a5cdb56a2346efcfd0c96b7a7d705812d4bd"
+    },
+    {
+      "name": "nutrient.csv",
+      "sha256": "466ab9d011094cc1ad8d939b246693988b56817c42d0e40a98820723695c6084"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "version": "mifflin-st-jeor-v1",
+  "cases": [
+    {
+      "name": "female muscle gain",
+      "input": {"age":30,"sex":"female","heightCm":165,"weightKg":60,"activity":"moderate","goal":"build-muscle","effectiveDate":"2026-10-10","calorieAdjustment":250,"proteinPerKg":1.6,"fatPercent":25},
+      "expected": {"calories":2300,"protein":96,"carbs":335,"fat":64,"restingCalories":1320,"maintenanceCalories":2046}
+    },
+    {
+      "name": "female fat loss",
+      "input": {"age":30,"sex":"female","heightCm":165,"weightKg":60,"activity":"moderate","goal":"lose-fat","effectiveDate":"2026-10-11","calorieAdjustment":-300,"proteinPerKg":1.6,"fatPercent":25},
+      "expected": {"calories":1750,"protein":96,"carbs":231,"fat":49,"restingCalories":1320,"maintenanceCalories":2046}
+    },
+    {
+      "name": "male sedentary maintenance",
+      "input": {"age":30,"sex":"male","heightCm":180,"weightKg":80,"activity":"sedentary","goal":"maintain","effectiveDate":"2026-10-10","calorieAdjustment":0,"proteinPerKg":1.6,"fatPercent":25},
+      "expected": {"calories":2140,"protein":128,"carbs":274,"fat":59,"restingCalories":1780,"maintenanceCalories":2136}
+    },
+    {
+      "name": "male light maintenance and half rounding",
+      "input": {"age":30,"sex":"male","heightCm":180,"weightKg":80,"activity":"light","goal":"maintain","effectiveDate":"2026-10-10","calorieAdjustment":0,"proteinPerKg":1.6,"fatPercent":25},
+      "expected": {"calories":2450,"protein":128,"carbs":332,"fat":68,"restingCalories":1780,"maintenanceCalories":2448}
+    },
+    {
+      "name": "male moderate gain and carbohydrate half rounding",
+      "input": {"age":30,"sex":"male","heightCm":180,"weightKg":80,"activity":"moderate","goal":"build-muscle","effectiveDate":"2026-10-10","calorieAdjustment":250,"proteinPerKg":1.6,"fatPercent":25},
+      "expected": {"calories":3010,"protein":128,"carbs":436,"fat":84,"restingCalories":1780,"maintenanceCalories":2759}
+    },
+    {
+      "name": "male active maintenance",
+      "input": {"age":30,"sex":"male","heightCm":180,"weightKg":80,"activity":"active","goal":"maintain","effectiveDate":"2026-10-10","calorieAdjustment":0,"proteinPerKg":1.6,"fatPercent":25},
+      "expected": {"calories":3070,"protein":128,"carbs":448,"fat":85,"restingCalories":1780,"maintenanceCalories":3071}
+    },
+    {
+      "name": "male very active maintenance",
+      "input": {"age":30,"sex":"male","heightCm":180,"weightKg":80,"activity":"very-active","goal":"maintain","effectiveDate":"2026-10-10","calorieAdjustment":0,"proteinPerKg":1.6,"fatPercent":25},
+      "expected": {"calories":3380,"protein":128,"carbs":506,"fat":94,"restingCalories":1780,"maintenanceCalories":3382}
+    },
+    {
+      "name": "fractional weight and custom macro allocation",
+      "input": {"age":29,"sex":"female","heightCm":172,"weightKg":72.5,"activity":"light","goal":"lose-fat","effectiveDate":"2026-10-12","calorieAdjustment":-200,"proteinPerKg":1.8,"fatPercent":30},
+      "expected": {"calories":1850,"protein":131,"carbs":192,"fat":62,"restingCalories":1494,"maintenanceCalories":2054}
+    }
+  ]
+}

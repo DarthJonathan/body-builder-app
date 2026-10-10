@@ -1,0 +1,17 @@
+node_modules/
+.svelte-kit/
+build/
+dist/
+.env
+.env.*
+!.env.example
+.DS_Store
+coverage/
+playwright-report/
+playwright-live-report/
+test-results/
+test-results-live/
+ci-artifacts/
+__pycache__/
+backend/training-api
+backend/tmp/

@@ -1,0 +1,51 @@
+name: publish
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  checks:
+    uses: ./.github/workflows/ci.yml
+
+  publish-images:
+    needs: checks
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push backend image
+        run: |
+          OWNER_LC="${GITHUB_REPOSITORY_OWNER,,}"
+          docker build ./backend --label "org.opencontainers.image.source=https://github.com/${GITHUB_REPOSITORY}" --tag "ghcr.io/${OWNER_LC}/bodybuilder-backend:latest"
+          docker push "ghcr.io/${OWNER_LC}/bodybuilder-backend:latest"
+
+      - name: Build and push frontend image
+        run: |
+          OWNER_LC="${GITHUB_REPOSITORY_OWNER,,}"
+          docker build ./frontend --label "org.opencontainers.image.source=https://github.com/${GITHUB_REPOSITORY}" --tag "ghcr.io/${OWNER_LC}/bodybuilder-frontend:latest"
+          docker push "ghcr.io/${OWNER_LC}/bodybuilder-frontend:latest"

@@ -1,0 +1,408 @@
+{
+  "source": "https://github.com/yuhonas/free-exercise-db",
+  "imported": "2026-10-09T10:32:55.553Z",
+  "datasetSha256": "5bb747e3fc658f095a60dcbf6d53c96627acdcc6ffb6fffde86f7e26995d40bf",
+  "licence": "Unlicense",
+  "entries": {
+    "deadlift": {
+      "sourceId": "Barbell_Deadlift",
+      "sourceName": "Barbell Deadlift",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Deadlift/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Barbell_Deadlift.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "hip-thrust": {
+      "sourceId": "Barbell_Hip_Thrust",
+      "sourceName": "Barbell Hip Thrust",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Hip_Thrust/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Barbell_Hip_Thrust.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "reverse-lunge": {
+      "sourceId": "Elevated_Back_Lunge",
+      "sourceName": "Elevated Back Lunge",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Elevated_Back_Lunge/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Elevated_Back_Lunge.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "kickback": {
+      "sourceId": "One-Legged_Cable_Kickback",
+      "sourceName": "One-Legged Cable Kickback",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/One-Legged_Cable_Kickback/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/One-Legged_Cable_Kickback.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "machine-sit-up": {
+      "sourceId": "Ab_Crunch_Machine",
+      "sourceName": "Ab Crunch Machine",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Ab_Crunch_Machine.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "plank": {
+      "sourceId": "Plank",
+      "sourceName": "Plank",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plank/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Plank.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "pushup": {
+      "sourceId": "Pushups",
+      "sourceName": "Pushups",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Pushups/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Pushups.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "lat-pulldown": {
+      "sourceId": "Wide-Grip_Lat_Pulldown",
+      "sourceName": "Wide-Grip Lat Pulldown",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Wide-Grip_Lat_Pulldown/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Wide-Grip_Lat_Pulldown.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "shoulder-press": {
+      "sourceId": "Dumbbell_Shoulder_Press",
+      "sourceName": "Dumbbell Shoulder Press",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Shoulder_Press/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Dumbbell_Shoulder_Press.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "supported-row": {
+      "sourceId": "Dumbbell_Incline_Row",
+      "sourceName": "Dumbbell Incline Row",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Incline_Row/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Dumbbell_Incline_Row.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "lateral-raise": {
+      "sourceId": "Cable_Seated_Lateral_Raise",
+      "sourceName": "Cable Seated Lateral Raise",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Seated_Lateral_Raise/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Cable_Seated_Lateral_Raise.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "preacher-curl": {
+      "sourceId": "One_Arm_Dumbbell_Preacher_Curl",
+      "sourceName": "One Arm Dumbbell Preacher Curl",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/One_Arm_Dumbbell_Preacher_Curl/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/One_Arm_Dumbbell_Preacher_Curl.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "squat": {
+      "sourceId": "Barbell_Squat",
+      "sourceName": "Barbell Squat",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Barbell_Squat.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "calf-raise": {
+      "sourceId": "Calf_Press_On_The_Leg_Press_Machine",
+      "sourceName": "Calf Press On The Leg Press Machine",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Calf_Press_On_The_Leg_Press_Machine/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Calf_Press_On_The_Leg_Press_Machine.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "machine-abduction": {
+      "sourceId": "Thigh_Abductor",
+      "sourceName": "Thigh Abductor",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Thigh_Abductor/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Thigh_Abductor.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "walking-lunge": {
+      "sourceId": "Barbell_Walking_Lunge",
+      "sourceName": "Barbell Walking Lunge",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Walking_Lunge/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Barbell_Walking_Lunge.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "dead-bug": {
+      "sourceId": "Dead_Bug",
+      "sourceName": "Dead Bug",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dead_Bug/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Dead_Bug.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "flat-dumbbell-press": {
+      "sourceId": "Dumbbell_Bench_Press",
+      "sourceName": "Dumbbell Bench Press",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bench_Press/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Dumbbell_Bench_Press.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "cable-row": {
+      "sourceId": "Seated_Cable_Rows",
+      "sourceName": "Seated Cable Rows",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Seated_Cable_Rows/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Seated_Cable_Rows.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "rear-delt-fly": {
+      "sourceId": "Reverse_Flyes",
+      "sourceName": "Reverse Flyes",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Reverse_Flyes/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Reverse_Flyes.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "tricep-extension": {
+      "sourceId": "Seated_Triceps_Press",
+      "sourceName": "Seated Triceps Press",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Seated_Triceps_Press/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Seated_Triceps_Press.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "romanian-deadlift": {
+      "sourceId": "Romanian_Deadlift",
+      "sourceName": "Romanian Deadlift",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Romanian_Deadlift/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Romanian_Deadlift.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "split-squat": {
+      "sourceId": "Split_Squat_with_Dumbbells",
+      "sourceName": "Split Squat with Dumbbells",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Split_Squat_with_Dumbbells/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Split_Squat_with_Dumbbells.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "leg-curl": {
+      "sourceId": "Seated_Leg_Curl",
+      "sourceName": "Seated Leg Curl",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Seated_Leg_Curl/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Seated_Leg_Curl.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "leg-extension": {
+      "sourceId": "Leg_Extensions",
+      "sourceName": "Leg Extensions",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Leg_Extensions/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Leg_Extensions.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "bench-press": {
+      "sourceId": "Barbell_Bench_Press_-_Medium_Grip",
+      "sourceName": "Barbell Bench Press - Medium Grip",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Bench_Press_-_Medium_Grip/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Barbell_Bench_Press_-_Medium_Grip.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "barbell-row": {
+      "sourceId": "Bent_Over_Barbell_Row",
+      "sourceName": "Bent Over Barbell Row",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Bent_Over_Barbell_Row/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Bent_Over_Barbell_Row.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "overhead-press": {
+      "sourceId": "Standing_Military_Press",
+      "sourceName": "Standing Military Press",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Military_Press/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Standing_Military_Press.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "chinup": {
+      "sourceId": "Chin-Up",
+      "sourceName": "Chin-Up",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Chin-Up/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Chin-Up.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "pec-deck": {
+      "sourceId": "Butterfly",
+      "sourceName": "Butterfly",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Butterfly/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Butterfly.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "triceps-pushdown": {
+      "sourceId": "Triceps_Pushdown",
+      "sourceName": "Triceps Pushdown",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Triceps_Pushdown/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Triceps_Pushdown.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "cable-curl": {
+      "sourceId": "Standing_Biceps_Cable_Curl",
+      "sourceName": "Standing Biceps Cable Curl",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Biceps_Cable_Curl/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Standing_Biceps_Cable_Curl.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "incline-press": {
+      "sourceId": "Incline_Dumbbell_Press",
+      "sourceName": "Incline Dumbbell Press",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Incline_Dumbbell_Press/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Incline_Dumbbell_Press.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "rack-pull": {
+      "sourceId": "Rack_Pulls",
+      "sourceName": "Rack Pulls",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Rack_Pulls/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Rack_Pulls.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "military-press": {
+      "sourceId": "Standing_Military_Press",
+      "sourceName": "Standing Military Press",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Military_Press/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Standing_Military_Press.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "machine-chest-press": {
+      "sourceId": "Machine_Bench_Press",
+      "sourceName": "Machine Bench Press",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Machine_Bench_Press/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Machine_Bench_Press.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "machine-shoulder-press": {
+      "sourceId": "Machine_Shoulder_Military_Press",
+      "sourceName": "Machine Shoulder (Military) Press",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Machine_Shoulder_Military_Press/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Machine_Shoulder_Military_Press.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "dumbbell-curl": {
+      "sourceId": "Dumbbell_Bicep_Curl",
+      "sourceName": "Dumbbell Bicep Curl",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Dumbbell_Bicep_Curl.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "triceps-dip": {
+      "sourceId": "Dip_Machine",
+      "sourceName": "Dip Machine",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dip_Machine/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Dip_Machine.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "cable-crunch": {
+      "sourceId": "Cable_Crunch",
+      "sourceName": "Cable Crunch",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Crunch/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Cable_Crunch.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "cable-pull-through": {
+      "sourceId": "Pull_Through",
+      "sourceName": "Pull Through",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Pull_Through/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Pull_Through.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "standing-calf-raise": {
+      "sourceId": "Standing_Calf_Raises",
+      "sourceName": "Standing Calf Raises",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Calf_Raises/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Standing_Calf_Raises.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "seated-calf-raise": {
+      "sourceId": "Seated_Calf_Raise",
+      "sourceName": "Seated Calf Raise",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Seated_Calf_Raise/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Seated_Calf_Raise.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "dumbbell-rdl": {
+      "sourceId": "Stiff-Legged_Dumbbell_Deadlift",
+      "sourceName": "Stiff-Legged Dumbbell Deadlift",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Stiff-Legged_Dumbbell_Deadlift/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Stiff-Legged_Dumbbell_Deadlift.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "leg-press": {
+      "sourceId": "Leg_Press",
+      "sourceName": "Leg Press",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Leg_Press/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Leg_Press.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "hack-squat": {
+      "sourceId": "Hack_Squat",
+      "sourceName": "Hack Squat",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Hack_Squat/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Hack_Squat.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "hyperextension": {
+      "sourceId": "Hyperextensions_Back_Extensions",
+      "sourceName": "Hyperextensions (Back Extensions)",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Hyperextensions_Back_Extensions/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Hyperextensions_Back_Extensions.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "weighted-sit-up": {
+      "sourceId": "Decline_Crunch",
+      "sourceName": "Decline Crunch",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Decline_Crunch/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Decline_Crunch.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "reverse-crunch": {
+      "sourceId": "Reverse_Crunch",
+      "sourceName": "Reverse Crunch",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Reverse_Crunch/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Reverse_Crunch.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "hanging-leg-raise": {
+      "sourceId": "Hanging_Leg_Raise",
+      "sourceName": "Hanging Leg Raise",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Hanging_Leg_Raise/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Hanging_Leg_Raise.json",
+      "licence": "Unlicense",
+      "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    }
+  }
+}

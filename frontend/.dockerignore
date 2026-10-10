@@ -1,0 +1,11 @@
+node_modules
+.svelte-kit
+build
+.env
+.env.*
+*.log
+ci-artifacts
+playwright-report
+playwright-live-report
+test-results
+test-results-live
