@@ -40,3 +40,11 @@ Sources: [original Mifflin–St Jeor paper](https://ajcn.nutrition.org/article/S
 - [x] Inspect the running app, save a review capture, update setup/status/verification docs, and clean isolated test data.
 
 Completed locally on 10 October 2026. The final browser suites passed 110 checks; all twelve PostgreSQL integration cases passed under the Go race detector. The USDA import reproduces 7,793 genuine records from the pinned archive. The isolated E2E service and its schema were removed; the normal app remains available. Exact evidence and external/device limits are in [the verification report](docs/LIVE_VERIFICATION.md).
+
+## Add Food layout follow-up
+
+- [x] Keep the search icon, input, and explicit Search button on one compact row; retain vertical layouts for the other sheet forms.
+- [x] Extend the existing live food-search regression to verify alignment and containment at narrow phone, reference phone, and desktop widths, including the Search button used by real accounts.
+- [x] Verify the regression, manual food entry, and Svelte checks; inspect a rendered phone capture and remove the isolated test service/data.
+
+Verified on 10 October 2026: the new layout assertion failed against the original CSS (42px vertical misalignment at 393px). After limiting the vertical-form rule to non-search forms and increasing the Search tap target to 44px, the two live food-search checks passed at 320px, 393px, and 1024px in Chromium/WebKit. All six existing fixture nutrition cases passed with retries disabled; Svelte reported zero errors and warnings. Reviewed settled phone captures from both engines. Each owned E2E schema and service was removed automatically; normal app data was preserved.

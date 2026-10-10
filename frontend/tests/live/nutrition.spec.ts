@@ -140,6 +140,30 @@ test('genuine USDA foods remain searchable with a failed upstream and save revie
   await navigate(app, 'Nutrition');
   await app.getByRole('button', { name: 'Add food to Breakfast', exact: true }).click();
   const dialog = app.getByRole('dialog');
+  const searchField = dialog.locator('form.search-field');
+  for (const width of [393, 320, 1024]) {
+    await app.setViewportSize({ width, height: 852 });
+    await expect(searchField.getByRole('button', { name: 'Search', exact: true })).toBeVisible();
+    const layout = await searchField.evaluate(form => {
+      const rect = (element: Element) => {
+        const box = element.getBoundingClientRect();
+        return { left: box.left, right: box.right, centerY: box.top + box.height / 2, height: box.height };
+      };
+      return { field: rect(form), icon: rect(form.querySelector('svg')!), input: rect(form.querySelector('input')!), button: rect(form.querySelector('button')!) };
+    });
+    expect(Math.abs(layout.icon.centerY - layout.input.centerY), `Search icon and input alignment at ${width}px`).toBeLessThan(2);
+    expect(Math.abs(layout.input.centerY - layout.button.centerY), `Search input and button alignment at ${width}px`).toBeLessThan(2);
+    expect(layout.icon.right).toBeLessThanOrEqual(layout.input.left);
+    expect(layout.input.right).toBeLessThanOrEqual(layout.button.left);
+    expect(layout.button.height, `Search tap target at ${width}px`).toBeGreaterThanOrEqual(44);
+    expect(layout.field.height, `Compact search bar at ${width}px`).toBeLessThanOrEqual(56);
+    expect(layout.field.left).toBeGreaterThanOrEqual(0);
+    expect(layout.field.right).toBeLessThanOrEqual(width);
+  }
+  await app.setViewportSize({ width: 393, height: 852 });
+  // Capture the settled sheet after the registration notification has cleared.
+  await expect(app.getByText('Your account is ready', { exact: true })).not.toBeVisible();
+  await testInfo.attach('add-food-phone', { body: await app.screenshot({ animations: 'disabled' }), contentType: 'image/png' });
   const searched = app.waitForResponse(response => new URL(response.url()).pathname === '/api/v1/foods/search' && new URL(response.url()).searchParams.get('q') === 'banana');
   await dialog.getByLabel('Search foods', { exact: true }).fill('banana');
   // Opening autofocus must not take focus from a field the user has entered.
