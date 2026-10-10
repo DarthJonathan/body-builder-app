@@ -97,9 +97,9 @@ Install matching browsers with `npx playwright install chromium webkit` if neede
 
 ## GitHub Actions
 
-[publish](.github/workflows/publish.yml) follows expense_tracker: pushes to `main` and manual runs publish `ghcr.io/<lowercase-owner>/bodybuilder-backend:latest` and `ghcr.io/<lowercase-owner>/bodybuilder-frontend:latest` with `GITHUB_TOKEN`. Publishing is limited to `main` and waits for all [CI checks](.github/workflows/ci.yml). Pull requests and other branch pushes run CI without publishing.
+[publish](.github/workflows/publish.yml) follows expense_tracker: pushes to `main` and manual runs on `main` build and publish `ghcr.io/<lowercase-owner>/bodybuilder-backend:latest` and `ghcr.io/<lowercase-owner>/bodybuilder-frontend:latest` with `GITHUB_TOKEN`. Publishing runs independently of [CI checks](.github/workflows/ci.yml). Pull requests, other branch pushes, and manual CI runs execute tests without publishing.
 
-CI checks Go formatting/vet/race tests with real PostgreSQL, builds the API/admin CLI, checks Svelte/TypeScript and client unit tests, runs Chromium/WebKit UI and production/offline checks, and builds both production Docker images. Browser reports and failure traces/screenshots are retained for seven days. Test jobs use disposable databases, synthetic accounts, and local provider stubs; they need no production secrets or paid AI keys. See [CI setup and local reproduction](docs/CI.md). A hosted run and image publishing remain unverified until the workflows are committed and pushed to GitHub. Server deployment is not configured.
+CI checks Go formatting/vet/race tests with real PostgreSQL, builds the API/admin CLI, checks Svelte/TypeScript and client unit tests, runs Chromium/WebKit UI and production/offline checks, and builds both production Docker images. Browser reports and failure traces/screenshots are retained for seven days. Test jobs use disposable databases, synthetic accounts, and local provider stubs; they need no production secrets or paid AI keys. See [CI setup and local reproduction](docs/CI.md). Hosted verification of the current changes and image publishing require committing and pushing them to GitHub. Server deployment is not configured.
 
 ## Implementation references
 
