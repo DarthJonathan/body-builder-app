@@ -70,6 +70,8 @@ function privateTemplate(template: Program): Program {
   const copy: Program = {
     id: id('program'), name: template.name, goal: template.goal,
     level: template.level, source: template.source,
+    sourceName: template.sourceName, sourceReviewedAt: template.sourceReviewedAt,
+    adaptationNote: template.adaptationNote,
     workouts: template.workouts.map(workout => {
       const groups = new Map<string, string>();
       return {

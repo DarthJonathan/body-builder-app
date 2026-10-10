@@ -60,12 +60,15 @@ type Workout struct {
 	Warmup    []string       `json:"warmup"`
 }
 type Program struct {
-	ID       string    `json:"id"`
-	Name     string    `json:"name"`
-	Level    string    `json:"level"`
-	Goal     string    `json:"goal"`
-	Workouts []Workout `json:"workouts"`
-	Source   string    `json:"source,omitempty"`
+	ID               string    `json:"id"`
+	Name             string    `json:"name"`
+	Level            string    `json:"level"`
+	Goal             string    `json:"goal"`
+	Workouts         []Workout `json:"workouts"`
+	Source           string    `json:"source,omitempty"`
+	SourceName       string    `json:"sourceName,omitempty"`
+	SourceReviewedAt string    `json:"sourceReviewedAt,omitempty"`
+	AdaptationNote   string    `json:"adaptationNote,omitempty"`
 }
 type ProgramTemplate struct {
 	Program

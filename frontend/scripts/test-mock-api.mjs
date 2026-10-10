@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { execFile } from 'node:child_process';
-import { mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, rm, writeFile, readFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import { createRequire } from 'node:module';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -36,7 +37,7 @@ try {
   const compiled = createRequire(path.join(output, 'tests.cjs'));
   const { createMockClient } = compiled('./mock/client.js');
   const { localDate, shiftDate } = compiled('./domain.js');
-  const { templates } = compiled('./catalogue.js');
+  const { templates, exercises, muscles, readings } = compiled('./catalogue.js');
   const { DEFAULT_PREVIEW_EMAIL, FAIL_NEXT_KEY, DELAY_KEY, ACTIVE_KEY, accountKey } = compiled('./mock/storage.js');
   const today = localDate();
 
@@ -229,6 +230,58 @@ try {
     assert.equal(assigned.schedule.filter(slot => slot.date === shiftDate(today, 2)).length, 1);
     assert.equal(assigned.schedule.find(slot => slot.date === shiftDate(today, 2)).workoutId, copy.workouts[0].id);
     await rejects(client.useTemplate('missing-template'), 404);
+  });
+
+  await test('the Go catalogue matches the UI and exercise assets are available with verified provenance', async () => {
+    const server = JSON.parse(await readFile(path.join(frontend, '../backend/catalogue/catalogue.json'), 'utf8'));
+    assert.deepEqual(server, JSON.parse(JSON.stringify({ templates, exercises, muscles, readings, foods: [] })), 'run npm run export:catalogue after catalogue edits');
+    const provenance = JSON.parse(await readFile(path.join(frontend, 'static/images/exercise-provenance.json'), 'utf8'));
+    for (const exercise of exercises) {
+      const bytes = await readFile(path.join(frontend, 'static', exercise.image.slice(1)));
+      const source = provenance.entries[exercise.id];
+      if (source?.imageSha256) {
+        assert.equal(createHash('sha256').update(bytes).digest('hex'), source.imageSha256, `image checksum: ${exercise.id}`);
+        assert.match(source.sourceURL, /\/blob\/[a-f0-9]{40}\//);
+        assert.equal(source.licence, 'Unlicense');
+      }
+    }
+  });
+
+  await test('every starter program copies, saves and restores its provenance and all prescription flags independently', async () => {
+    const { client } = setup();
+    const initial = await client.getSnapshot();
+    const publicBefore = structuredClone(templates);
+    const generatedIds = new Set();
+    for (const source of templates) {
+      let state = await client.useTemplate(source.id);
+      const copy = state.programs.find(program => program.id === state.activeProgramId);
+      assert.notEqual(copy.id, source.id);
+      for (const key of ['source', 'sourceName', 'sourceReviewedAt', 'adaptationNote']) assert.equal(copy[key], source[key]);
+      for (let wi = 0; wi < source.workouts.length; wi++) {
+        const original = source.workouts[wi], workout = copy.workouts[wi];
+        assert.notEqual(workout.id, original.id);
+        const groups = new Map();
+        for (let pi = 0; pi < original.exercises.length; pi++) {
+          const prescription = workout.exercises[pi], expected = original.exercises[pi];
+          assert.notEqual(prescription.id, expected.id);
+          assert.ok(!generatedIds.has(prescription.id));
+          generatedIds.add(prescription.id);
+          if (expected.superset) {
+            assert.notEqual(prescription.superset, expected.superset);
+            if (groups.has(expected.superset)) assert.equal(prescription.superset, groups.get(expected.superset));
+            groups.set(expected.superset, prescription.superset);
+          }
+          assert.deepEqual({ ...prescription, id: expected.id, superset: expected.superset }, { ...expected, superset: expected.superset });
+        }
+      }
+      copy.name = `My ${source.name}`;
+      copy.workouts[0].exercises[0].sets += 1;
+      state = await client.saveProgram(copy);
+      assert.deepEqual((await createMockClient().getSnapshot()).programs.find(p => p.id === copy.id), JSON.parse(JSON.stringify(copy)));
+      assert.deepEqual(state.schedule, initial.schedule);
+      assert.deepEqual(state.sessions, initial.sessions);
+      assert.deepEqual(templates, publicBefore);
+    }
   });
 
   await test('sign-out, restoration, account isolation, and in-flight account changes are enforced', async () => {

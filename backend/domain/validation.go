@@ -117,6 +117,17 @@ func ValidateProgram(p Program, knownExercises map[string]bool, knownMuscles map
 	if err := Text(p.Source, "program source", 2000, true); err != nil {
 		return err
 	}
+	if err := Text(p.SourceName, "program source name", 150, true); err != nil {
+		return err
+	}
+	if p.SourceReviewedAt != "" {
+		if err := Date(p.SourceReviewedAt); err != nil {
+			return err
+		}
+	}
+	if err := Text(p.AdaptationNote, "program adaptation note", 2000, true); err != nil {
+		return err
+	}
 	workouts := map[string]bool{}
 	for _, w := range p.Workouts {
 		if err := Identifier(w.ID); err != nil {

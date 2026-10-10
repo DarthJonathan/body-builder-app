@@ -24,6 +24,8 @@ Implementation contract for the real-backend milestone, updated 10 October 2026.
 | `deleteFood` / `deleteLesson` | `{id}` |
 | `copyFoods` | `{fromDate,toDate}` |
 
+`Program` optionally carries `sourceName` (150 characters), `sourceReviewedAt` (YYYY-MM-DD), and `adaptationNote` (2,000 characters). `useTemplate` preserves these fields in a private copy, regenerates program/workout/prescription/superset IDs, and leaves the calendar unchanged. `saveProgram` validates and preserves provenance; older programs without these fields remain valid. A timed prescription (`seconds: true`) interprets logged `sets[].reps` as seconds and shows a seconds input in the frontend.
+
 ## Providers and calculator
 
 - `GET /api/v1/foods/search?q=...`: `Food[]`, with genuine source and serving units. Bundled USDA FoodData Central SR Legacy April 2018 records supply common ingredients without an API key. Local matches avoid upstream requests; unmatched packaged-food searches use keyless Open Food Facts. Your saved foods remain searchable during upstream failures. Saved-food search returns one serving, rather than a previous entry's quantity, and keeps original database attribution. A `FoodEntry` may retain `databaseSource` (maximum 1000 characters); its nutrients are totals for the reviewed quantity. Search never saves a food or invokes AI. Manual entry remains available. See the [pinned dataset and importer](../../backend/providers/README.md).

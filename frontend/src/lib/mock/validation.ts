@@ -117,6 +117,9 @@ export function program(value: unknown): asserts value is Program {
   list(data.workouts, 'Workouts', 30); data.workouts.forEach(workout); unique(data.workouts as Workout[], 'Workouts');
   if (!data.workouts.length) invalid('Add at least one workout to your program.');
   if (data.source !== undefined) string(data.source, 'Program source', 2_000, true);
+  if (data.sourceName !== undefined) string(data.sourceName, 'Program source name', 150, true);
+  if (data.sourceReviewedAt !== undefined) date(data.sourceReviewedAt, 'Program source review date');
+  if (data.adaptationNote !== undefined) string(data.adaptationNote, 'Program adaptation note', 2_000, true);
 }
 
 export function loggedSet(value: unknown): asserts value is LoggedSet {

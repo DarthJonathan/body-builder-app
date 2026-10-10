@@ -6,6 +6,8 @@ A training PWA with SvelteKit 5/TypeScript and a Go/PostgreSQL backend. The five
 
 Public registration and password sign-in are real. New accounts start empty. Programs, calendar assignments, workout sets/effort/rest/completion, food logs, dated nutrition overrides, daily weight-and-notes check-ins, progress summaries, and lesson links/notes save privately to PostgreSQL and sync between devices. Templates are explicitly chosen and copied. Session prescriptions are frozen so later program edits cannot rewrite workout history.
 
+Workout → Choose a Program includes seven starter templates: Upper / Lower, Beginner Full Body, PHUL Strength & Size, Push / Pull / Legs, Barbell 5×5, Dumbbell Full Body, and Glute Focus. Each includes source attribution, exercise guides and prescriptions; adaptations are disclosed in the chooser. Copies are private and editable, with calendar dates chosen separately. See the [program-library plan](PROGRAM_LIBRARY_PLAN.md) for the source mappings and verification.
+
 The live client keeps an account-specific IndexedDB snapshot and durable outbox. Existing records can be edited through a connection outage and replayed with stable retry IDs. Conflicting device edits require an explicit keep-local/use-server decision. Pending changes remain visible and can be reviewed or discarded. Copying a template or food day and starting a new workout need server acknowledgement before the new records can be edited. Signing out clears visible private data and drafts. Private API responses are excluded from service-worker caches.
 
 Food search uses bundled USDA ingredient records without an API key, then Open Food Facts for unmatched packaged-food searches. Database sources, servings, and reviewed quantities are retained. Saved foods and USDA matches remain available during upstream failures; manual entry is available. Optional **Ask AI** and **Estimate from Photo** actions use an administrator's OpenAI, Anthropic, or OpenRouter configuration. Photo drafts require review and explicit saving. Regular calculation, food search, and logging do not call AI. Keys are encrypted in PostgreSQL and never appear in snapshots or the outbox. See [provider and pinned-dataset details](backend/providers/README.md).
@@ -99,6 +101,8 @@ Install matching browsers with `npx playwright install chromium webkit` if neede
 
 [publish](.github/workflows/publish.yml) follows expense_tracker: pushes to `main` and manual runs on `main` build and publish `ghcr.io/<lowercase-owner>/bodybuilder-backend:latest` and `ghcr.io/<lowercase-owner>/bodybuilder-frontend:latest` with `GITHUB_TOKEN`. Publishing runs independently of [CI checks](.github/workflows/ci.yml). Pull requests, other branch pushes, and manual CI runs execute tests without publishing.
 
+Program-library updates are bundled in the Go binary and frontend image, including the local exercise photographs. After publishing, pull and redeploy both images so the catalogue, guides and assets stay in sync. This library expansion requires no database migration, new environment variable or remote template API; existing saved programs remain valid.
+
 CI checks Go formatting/vet/race tests with real PostgreSQL, builds the API/admin CLI, checks Svelte/TypeScript and client unit tests, runs Chromium/WebKit UI and production/offline checks, and builds both production Docker images. Browser reports and failure traces/screenshots are retained for seven days. Test jobs use disposable databases, synthetic accounts, and local provider stubs; they need no production secrets or paid AI keys. See [CI setup and local reproduction](docs/CI.md). Hosted verification of the current changes and image publishing require committing and pushing them to GitHub. Server deployment is not configured.
 
 ## Implementation references
@@ -106,6 +110,7 @@ CI checks Go formatting/vet/race tests with real PostgreSQL, builds the API/admi
 - [Live API contract](docs/api/contract.md)
 - [Backend execution plan](BACKEND_IMPLEMENTATION_PLAN.md)
 - [Nutrition execution plan](NUTRITION_IMPLEMENTATION_PLAN.md)
+- [Expanded program-library plan and sources](PROGRAM_LIBRARY_PLAN.md)
 - [CI execution plan](CI_IMPLEMENTATION_PLAN.md)
 - [Original product plan](IMPLEMENTATION_PLAN.md)
 - [Mock contract](frontend/docs/MOCK_API.md)

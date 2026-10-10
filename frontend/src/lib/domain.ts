@@ -18,7 +18,10 @@ export type Prescription = {
   perSide?: boolean; seconds?: boolean; amrapLast?: boolean; restSeconds: number; superset?: string;
 };
 export type Workout = { id: string; name: string; muscles: Muscle[]; exercises: Prescription[]; warmup: string[] };
-export type Program = { id: string; name: string; level: string; goal: Goal; workouts: Workout[]; source?: string };
+export type Program = {
+  id: string; name: string; level: string; goal: Goal; workouts: Workout[]; source?: string;
+  sourceName?: string; sourceReviewedAt?: string; adaptationNote?: string;
+};
 export type ProgramTemplate = Program & { description: string; daysPerWeek: number; equipment: string; source: string };
 export type ScheduleEntry = { id: string; date: string; workoutId: string | null };
 export type LoggedSet = { id: string; weight: number; reps: number; effort: Effort; completed: boolean };

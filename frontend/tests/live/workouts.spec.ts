@@ -1,5 +1,6 @@
-import { test, expect, registerAccount, signIn, backendSnapshot, createAndScheduleTemplate, navigate } from './helpers';
+import { test, expect, registerAccount, signIn, backendSnapshot, createAndScheduleTemplate, navigate, today } from './helpers';
 import type { Route } from '@playwright/test';
+import { addedProgramCases } from '../program-cases';
 
 test('personal templates, calendar assignments and workout logs persist across real devices', async ({ app, secondDevice }, testInfo) => {
   const account = await registerAccount(app, testInfo, 'workout');
@@ -42,6 +43,71 @@ test('personal templates, calendar assignments and workout logs persist across r
   expect(finished.exercises[0].sets[0].effort).toBe('hard');
   await secondDevice.reload();
   expect((await backendSnapshot(secondDevice, account.token)).sessions[0].finishedAt).toBe(finished.finishedAt);
+});
+
+test('expanded programs save provenance and prescriptions through Go and sync to a second device', async ({ app, secondDevice }, testInfo) => {
+  const account = await registerAccount(app, testInfo, 'program-library');
+  await createAndScheduleTemplate(app, account.token);
+  const initial = await backendSnapshot(app, account.token);
+  for (const { template } of addedProgramCases) {
+    await app.getByRole('button', { name: 'Choose a Program', exact: true }).click();
+    const card = app.getByRole('dialog').locator('article').filter({ has: app.getByRole('heading', { name: template.name, exact: true }) });
+    await expect(card).toContainText(template.adaptationNote!);
+    await card.getByRole('button', { name: 'Use Program', exact: true }).click();
+    await expect(app.getByRole('dialog')).not.toBeVisible();
+    const state = await backendSnapshot(app, account.token);
+    const copy = state.programs.find(program => program.id === state.activeProgramId)!;
+    expect(copy).toEqual(expect.objectContaining({ name: template.name, source: template.source, sourceName: template.sourceName, sourceReviewedAt: template.sourceReviewedAt, adaptationNote: template.adaptationNote }));
+    expect(copy.workouts.map(w => w.exercises.map(p => ({ ...p, id: '', superset: Boolean(p.superset) })))).toEqual(template.workouts.map(w => w.exercises.map(p => ({ ...p, id: '', superset: Boolean(p.superset) }))));
+    expect(state.schedule).toEqual(initial.schedule);
+    expect(state.programs.find(program => program.id === initial.activeProgramId)).toEqual(initial.programs[0]);
+  }
+  // Schedule the last chosen plan explicitly, then verify an edited private copy
+  // survives both PostgreSQL storage and authentication on another device.
+  let state = await backendSnapshot(app, account.token);
+  const copy = state.programs.find(program => program.id === state.activeProgramId)!;
+  await app.getByRole('button', { name: 'Program options', exact: true }).click();
+  await app.getByLabel('Program name', { exact: true }).fill('My saved dumbbell plan');
+  await app.getByRole('button', { name: 'Save', exact: true }).click();
+  await expect.poll(async () => (await backendSnapshot(app, account.token)).programs.find(p => p.id === copy.id)?.name).toBe('My saved dumbbell plan');
+  const date = await today(app);
+  const weekday = await app.evaluate(date => new Date(`${date}T12:00:00`).toLocaleDateString('en', { weekday: 'short' }), date);
+  await app.getByRole('button', { name: `Options for ${weekday} workout`, exact: true }).click();
+  await app.getByRole('dialog').getByRole('button', { name: copy.workouts[0].name, exact: true }).click();
+  await expect(app.getByRole('dialog')).not.toBeVisible();
+  await app.reload();
+  await navigate(app, 'Workout');
+  await expect(app.getByText('My saved dumbbell plan', { exact: true })).toBeVisible();
+  state = await backendSnapshot(app, account.token);
+  expect(state.programs).toHaveLength(6);
+  expect(state.schedule.find(entry => entry.date === date)?.workoutId).toBe(copy.workouts[0].id);
+  expect(state.programs.find(p => p.id === copy.id)?.adaptationNote).toBe(copy.adaptationNote);
+  await signIn(secondDevice, account);
+  await navigate(secondDevice, 'Workout');
+  await expect(secondDevice.getByText('My saved dumbbell plan', { exact: true })).toBeVisible();
+  expect((await backendSnapshot(secondDevice, account.token)).programs).toEqual(state.programs);
+  expect((await backendSnapshot(secondDevice, account.token)).schedule).toEqual(state.schedule);
+
+  const glute = state.programs.find(p => p.name === '3-Day Glute Focus')!;
+  await app.getByRole('button', { name: 'Choose a Program', exact: true }).click();
+  await app.getByRole('dialog').getByRole('button', { name: glute.name, exact: true }).click();
+  await expect(app.getByRole('dialog')).not.toBeVisible();
+  await app.getByRole('button', { name: `Options for ${weekday} workout`, exact: true }).click();
+  await app.getByRole('dialog').getByRole('button', { name: glute.workouts[2].name, exact: true }).click();
+  await expect(app.getByRole('dialog')).not.toBeVisible();
+  await app.getByRole('button', { name: 'Get Started', exact: true }).click();
+  await app.getByRole('button', { name: 'Start Workout', exact: true }).click();
+  const duration = app.getByLabel('Bodyweight Glute Bridge set 1 seconds', { exact: true });
+  await duration.fill('20');
+  await expect(app.getByLabel('Bodyweight Glute Bridge set 1 weight', { exact: true })).toHaveCount(0);
+  await app.getByRole('button', { name: 'Effort for Bodyweight Glute Bridge set 1', exact: true }).click();
+  await app.getByRole('button', { name: /^Medium/ }).click();
+  await expect.poll(async () => (await backendSnapshot(app, account.token)).sessions[0]?.exercises[0].sets[0].reps).toBe(20);
+  expect((await backendSnapshot(app, account.token)).sessions[0].exercises[0].prescription.seconds).toBe(true);
+  await app.reload();
+  await expect(duration).toHaveValue('20');
+  await secondDevice.reload();
+  await expect(secondDevice.getByLabel('Bodyweight Glute Bridge set 1 seconds', { exact: true })).toHaveValue('20');
 });
 
 test('saving reps during an effort tap keeps the control in place and opens its picker', async ({ app }, testInfo) => {

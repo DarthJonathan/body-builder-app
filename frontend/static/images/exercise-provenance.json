@@ -403,6 +403,272 @@
       "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/main/exercises/Hanging_Leg_Raise.json",
       "licence": "Unlicense",
       "note": "Preview demonstration. Variations may differ from the screenshot exercise."
+    },
+    "dumbbell-squat": {
+      "sourceId": "Dumbbell_Squat",
+      "sourceName": "Dumbbell Squat",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Dumbbell_Squat/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Dumbbell_Squat.json",
+      "licence": "Unlicense",
+      "note": "Free Exercise DB demonstration.",
+      "imageSha256": "04bfaa45a505214f4909392022edf361cb0ff65529bc0d289870adbb8b259b02"
+    },
+    "dumbbell-row": {
+      "sourceId": "Bent_Over_Two-Dumbbell_Row",
+      "sourceName": "Bent Over Two-Dumbbell Row",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Bent_Over_Two-Dumbbell_Row/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Bent_Over_Two-Dumbbell_Row.json",
+      "licence": "Unlicense",
+      "note": "Free Exercise DB demonstration.",
+      "imageSha256": "d691ee3c8d84dd4a7211081dd5c7d4f7c8f016ab764a3b80fd6712c0f523c9da"
+    },
+    "dumbbell-lateral-raise": {
+      "sourceId": "Side_Lateral_Raise",
+      "sourceName": "Side Lateral Raise",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Side_Lateral_Raise/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Side_Lateral_Raise.json",
+      "licence": "Unlicense",
+      "note": "Free Exercise DB demonstration.",
+      "imageSha256": "aa1982c367ea9151ee7769ac1f9f8795209db94a6eb85f7d51a7033886fb7ebc"
+    },
+    "dumbbell-lunge": {
+      "sourceId": "Dumbbell_Lunges",
+      "sourceName": "Dumbbell Lunges",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Dumbbell_Lunges/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Dumbbell_Lunges.json",
+      "licence": "Unlicense",
+      "note": "Free Exercise DB demonstration.",
+      "imageSha256": "ab3d56b0b44e82d189dfd88de2838220445cb245fae8a0f1586daa67355604d4"
+    },
+    "standing-dumbbell-press": {
+      "sourceId": "Standing_Dumbbell_Press",
+      "sourceName": "Standing Dumbbell Press",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Standing_Dumbbell_Press/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Standing_Dumbbell_Press.json",
+      "licence": "Unlicense",
+      "note": "Free Exercise DB demonstration.",
+      "imageSha256": "db1ff8c6dc877a840884f8a3202eba2be7a3f14ab95065f5f18dff50c4208423"
+    },
+    "dumbbell-fly": {
+      "sourceId": "Dumbbell_Flyes",
+      "sourceName": "Dumbbell Flyes",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Dumbbell_Flyes/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Dumbbell_Flyes.json",
+      "licence": "Unlicense",
+      "note": "Free Exercise DB demonstration.",
+      "imageSha256": "215bef04ad13e1629033f6d7333aeb6c66e9174b8fd13ece559e22aa351448f4"
+    },
+    "hammer-curl": {
+      "sourceId": "Hammer_Curls",
+      "sourceName": "Hammer Curls",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Hammer_Curls/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Hammer_Curls.json",
+      "licence": "Unlicense",
+      "note": "Free Exercise DB demonstration.",
+      "imageSha256": "f3c330d75545bed1cc325a4abf84940109db64fa5ab967b1963ecccccd3b2fe8"
+    },
+    "seated-dumbbell-extension": {
+      "sourceId": "Seated_Triceps_Press",
+      "sourceName": "Seated Triceps Press",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Seated_Triceps_Press/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Seated_Triceps_Press.json",
+      "licence": "Unlicense",
+      "note": "Free Exercise DB demonstration.",
+      "imageSha256": "1e9c8760bdaf3a8d7a69485b436e1df6e7444a02ad10d3d5c89f9ab0b1ddbcb8"
+    },
+    "dumbbell-step-up": {
+      "sourceId": "Dumbbell_Step_Ups",
+      "sourceName": "Dumbbell Step Ups",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Dumbbell_Step_Ups/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Dumbbell_Step_Ups.json",
+      "licence": "Unlicense",
+      "note": "Free Exercise DB demonstration.",
+      "imageSha256": "581f4f8eb98680a738ec97c1b9666fd2dac04d6a68a456632aaf1accbaa88118"
+    },
+    "one-arm-dumbbell-row": {
+      "sourceId": "One-Arm_Dumbbell_Row",
+      "sourceName": "One-Arm Dumbbell Row",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/One-Arm_Dumbbell_Row/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/One-Arm_Dumbbell_Row.json",
+      "licence": "Unlicense",
+      "note": "Free Exercise DB demonstration.",
+      "imageSha256": "04b2f49e6ba0c2fce5f566fe53d03571715fa58350a2b8558b3dfa9110093a53"
+    },
+    "dumbbell-rear-delt-fly": {
+      "sourceId": "Reverse_Flyes",
+      "sourceName": "Reverse Flyes",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Reverse_Flyes/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Reverse_Flyes.json",
+      "licence": "Unlicense",
+      "note": "Free Exercise DB demonstration.",
+      "imageSha256": "5d6d690c24bfa66b672152084eb244ab31be6773354812b16f5ef9e31b9845ed"
+    },
+    "close-grip-dumbbell-press": {
+      "sourceId": "Close-Grip_Dumbbell_Press",
+      "sourceName": "Close-Grip Dumbbell Press",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Close-Grip_Dumbbell_Press/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Close-Grip_Dumbbell_Press.json",
+      "licence": "Unlicense",
+      "note": "Free Exercise DB demonstration.",
+      "imageSha256": "5ed8de71ca7e37e9e6ea98eca171c96c23892474603779b684dd8cf76a1e277c"
+    },
+    "good-morning": {
+      "sourceId": "Good_Morning",
+      "sourceName": "Good Morning",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Good_Morning/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Good_Morning.json",
+      "licence": "Unlicense",
+      "note": "Free Exercise DB demonstration.",
+      "imageSha256": "e85711c454e0cc433ba1628386e886da621f07e698bd58a421d867e44e3b5807"
+    },
+    "bodyweight-kickback": {
+      "sourceId": "Glute_Kickback",
+      "sourceName": "Glute Kickback",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Glute_Kickback/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Glute_Kickback.json",
+      "licence": "Unlicense",
+      "note": "Free Exercise DB demonstration.",
+      "imageSha256": "e0a72e4dbcc763adba600044ae94060c92798684ac51924ab485398664ce5a1e"
+    },
+    "goblet-squat": {
+      "sourceId": "Goblet_Squat",
+      "sourceName": "Goblet Squat",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Goblet_Squat/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Goblet_Squat.json",
+      "licence": "Unlicense",
+      "note": "Source demonstration uses a kettlebell.",
+      "imageSha256": "342ea87afb9fa03d9b1ac9c28c269f9ad2536d40b5a73b0bfb1ea25c9d605d02"
+    },
+    "crunch": {
+      "sourceId": "Crunches",
+      "sourceName": "Crunches",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Crunches/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Crunches.json",
+      "licence": "Unlicense",
+      "note": "Free Exercise DB demonstration.",
+      "imageSha256": "8b424d42b3196b9b6fdd70c86db60ba6fdae7a337710e8c01c278a6ea5c4220a"
+    },
+    "glute-bridge": {
+      "sourceId": "Butt_Lift_Bridge",
+      "sourceName": "Butt Lift (Bridge)",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Butt_Lift_Bridge/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Butt_Lift_Bridge.json",
+      "licence": "Unlicense",
+      "note": "Source demonstration shows repeated bridges. The glute template prescribes a hold at the top.",
+      "imageSha256": "f74f6813fc43cd5f60e6779ec182049a2ddb3ed9dc5777389dd4ab1880392d5c"
+    },
+    "lying-leg-raise": {
+      "sourceId": "Flat_Bench_Lying_Leg_Raise",
+      "sourceName": "Flat Bench Lying Leg Raise",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Flat_Bench_Lying_Leg_Raise/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Flat_Bench_Lying_Leg_Raise.json",
+      "licence": "Unlicense",
+      "note": "Source demonstration uses a flat bench.",
+      "imageSha256": "87691104bd0accc790d4928d0cd7e5fb06d131c20918b2dcb7aa0e64244870f0"
+    },
+    "face-pull": {
+      "sourceId": "Face_Pull",
+      "sourceName": "Face Pull",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Face_Pull/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Face_Pull.json",
+      "licence": "Unlicense",
+      "note": "Free Exercise DB demonstration.",
+      "imageSha256": "a184e981e8cc261a5cc1856b92d897894691d83e27929aae7e89bc9d8aa1d444"
+    },
+    "barbell-curl": {
+      "sourceId": "Barbell_Curl",
+      "sourceName": "Barbell Curl",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Barbell_Curl/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Barbell_Curl.json",
+      "licence": "Unlicense",
+      "note": "Free Exercise DB demonstration.",
+      "imageSha256": "eb409ec1cced4d85c91c41920e66d8b2f0e4736dee43c01eab953fdcbeace673"
+    },
+    "skullcrusher": {
+      "sourceId": "Lying_Triceps_Press",
+      "sourceName": "Lying Triceps Press",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Lying_Triceps_Press/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Lying_Triceps_Press.json",
+      "licence": "Unlicense",
+      "note": "Free Exercise DB demonstration.",
+      "imageSha256": "3aabb70e4d74e81ee1e4beef6d0edf25cd077417681e6fde40ee6c8da24d0b9c"
+    },
+    "incline-barbell-press": {
+      "sourceId": "Barbell_Incline_Bench_Press_-_Medium_Grip",
+      "sourceName": "Barbell Incline Bench Press - Medium Grip",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Barbell_Incline_Bench_Press_-_Medium_Grip/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Barbell_Incline_Bench_Press_-_Medium_Grip.json",
+      "licence": "Unlicense",
+      "note": "Free Exercise DB demonstration.",
+      "imageSha256": "4a306bb94d93afc0356252001b24e9f7defc13ab85e3c55fc3dbcb678247ffb9"
+    },
+    "incline-dumbbell-curl": {
+      "sourceId": "Incline_Dumbbell_Curl",
+      "sourceName": "Incline Dumbbell Curl",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Incline_Dumbbell_Curl/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Incline_Dumbbell_Curl.json",
+      "licence": "Unlicense",
+      "note": "Free Exercise DB demonstration.",
+      "imageSha256": "49f16679de110156cda5caf7b68f277374102100bb9f09341bb8a802cbd6d8f7"
+    },
+    "front-squat": {
+      "sourceId": "Front_Barbell_Squat",
+      "sourceName": "Front Barbell Squat",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Front_Barbell_Squat/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Front_Barbell_Squat.json",
+      "licence": "Unlicense",
+      "note": "Free Exercise DB demonstration.",
+      "imageSha256": "f8a366b6913bd5af3072080720ba3ab7a74a7ef5754d1a39c200800cd6461f92"
+    },
+    "barbell-lunge": {
+      "sourceId": "Barbell_Lunge",
+      "sourceName": "Barbell Lunge",
+      "imageURL": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Barbell_Lunge/0.jpg",
+      "sourceURL": "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Barbell_Lunge.json",
+      "licence": "Unlicense",
+      "note": "Free Exercise DB demonstration.",
+      "imageSha256": "344bfb904d401611dc38c5021a95ee1d149da086e79e2eb4377f9a93c4d52c37"
     }
-  }
+  },
+  "imports": [
+    {
+      "sourceRef": "f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5",
+      "imported": "2026-10-10T09:18:11.855Z",
+      "datasetSha256": "5bb747e3fc658f095a60dcbf6d53c96627acdcc6ffb6fffde86f7e26995d40bf",
+      "exerciseIds": [
+        "dumbbell-squat",
+        "dumbbell-row",
+        "dumbbell-lateral-raise",
+        "dumbbell-lunge",
+        "standing-dumbbell-press",
+        "dumbbell-fly",
+        "hammer-curl",
+        "seated-dumbbell-extension",
+        "dumbbell-step-up",
+        "one-arm-dumbbell-row",
+        "dumbbell-rear-delt-fly",
+        "close-grip-dumbbell-press",
+        "good-morning",
+        "bodyweight-kickback",
+        "goblet-squat",
+        "crunch",
+        "glute-bridge",
+        "lying-leg-raise",
+        "face-pull"
+      ]
+    },
+    {
+      "sourceRef": "f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5",
+      "imported": "2026-10-10T09:27:17.353Z",
+      "datasetSha256": "5bb747e3fc658f095a60dcbf6d53c96627acdcc6ffb6fffde86f7e26995d40bf",
+      "exerciseIds": [
+        "barbell-curl",
+        "skullcrusher",
+        "incline-barbell-press",
+        "incline-dumbbell-curl",
+        "front-squat",
+        "barbell-lunge"
+      ]
+    }
+  ]
 }
