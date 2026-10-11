@@ -63,7 +63,9 @@ test('calculation requires personal choices and previews shared formula values w
   expect(await snapshot(app)).toEqual(before);
 });
 
-test('applied calculations and manual overrides retain dated provenance through recalculation', async ({ app }) => {
+// Keep this full interaction flow available locally and in opt-in manual CI.
+// Formula and persistence coverage still runs in the automatic unit/live suites.
+test('applied calculations and manual overrides retain dated provenance through recalculation', { tag: '@manual-ci' }, async ({ app }) => {
   const before = await snapshot(app);
   await openCalculator(app);
   await fillCalculation(app, baseInput);

@@ -6,6 +6,11 @@ on:
       - main
   pull_request:
   workflow_dispatch:
+    inputs:
+      include_manual_browser_tests:
+        description: Include the nutrition browser scenario excluded from automatic CI
+        type: boolean
+        default: false
   workflow_call:
 
 permissions:
@@ -115,14 +120,22 @@ jobs:
           npm run check
           npm run test:mock
           npm run test:nutrition
+          npm run test:goals
+          npm run test:expert
       - name: Fixture UI tests
         env:
           PLAYWRIGHT_HTML_OUTPUT_DIR: ${{ runner.temp }}/ci-artifacts/mock/development/report
-        run: npm run test:ui -- --output "$RUNNER_TEMP/ci-artifacts/mock/development/results"
+          BODYBUILDER_INCLUDE_MANUAL_BROWSER_TESTS: ${{ inputs.include_manual_browser_tests && '1' || '0' }}
+        run: |
+          ui_args=()
+          if [ "$BODYBUILDER_INCLUDE_MANUAL_BROWSER_TESTS" != "1" ]; then
+            ui_args+=(--grep-invert '@manual-ci')
+          fi
+          npm run test:ui -- "${ui_args[@]}" --output "$RUNNER_TEMP/ci-artifacts/mock/development/results"
       - name: Production PWA tests
         env:
           PLAYWRIGHT_HTML_OUTPUT_DIR: ${{ runner.temp }}/ci-artifacts/mock/production/report
-        run: npm run test:ui:production -- tests/pwa.spec.ts --output "$RUNNER_TEMP/ci-artifacts/mock/production/results"
+        run: npm run test:ui:production -- tests/pwa.spec.ts tests/goal-onboarding.spec.ts tests/expert-system.spec.ts tests/program-import.spec.ts --output "$RUNNER_TEMP/ci-artifacts/mock/production/results"
       - name: Build isolated live test API
         working-directory: backend
         env:
@@ -144,6 +157,23 @@ jobs:
           path: ${{ runner.temp }}/ci-artifacts/
           retention-days: 7
           if-no-files-found: ignore
+
+  ios:
+    name: iPhone / Health energy
+    runs-on: macos-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Health coverage policy tests
+        run: swift test --package-path native/ios --scratch-path "$RUNNER_TEMP/bodybuilder-health-tests"
+      - name: Compile unsigned iPhone wrapper
+        run: >-
+          xcodebuild -project native/ios/BodyBuilder.xcodeproj -target BodyBuilder
+          -configuration Debug -sdk iphonesimulator -arch arm64
+          SYMROOT="$RUNNER_TEMP/bodybuilder-ios/products" OBJROOT="$RUNNER_TEMP/bodybuilder-ios/objects"
+          CODE_SIGNING_ALLOWED=NO build
 
   docker:
     name: Docker / ${{ matrix.component }}

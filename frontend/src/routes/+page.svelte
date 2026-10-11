@@ -2,8 +2,16 @@
   import { onMount, tick, untrack } from 'svelte';
   import { pushState, replaceState } from '$app/navigation';
   import { page } from '$app/state';
-  import { Apple, ArrowLeft, ArrowRight, ArrowUp, ArrowDown, BookOpen, Calendar, Camera, Check, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Clipboard, Copy, Dumbbell, EllipsisVertical, ExternalLink, Flame, History, Home, Info, Link, LoaderCircle, LogOut, MessageCircle, Pencil, Play, Plus, RotateCcw, Scale, Search, Settings, Timer, Trash2, Trophy, UserCircle, Utensils, X, Zap, ChartLine } from 'lucide-svelte';
+  import { Apple, ArrowLeft, ArrowRight, ArrowUp, ArrowDown, BookOpen, Calendar, Camera, Check, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Clipboard, Copy, Dumbbell, EllipsisVertical, ExternalLink, FileText, Flame, History, Home, Info, Link, LoaderCircle, LogOut, MessageCircle, Pencil, Play, Plus, RotateCcw, Scale, Search, Settings, Timer, Trash2, Trophy, UserCircle, Utensils, X, Zap, ChartLine } from 'lucide-svelte';
   import Sheet from '$lib/components/Sheet.svelte';
+  import ProgressReview from '$lib/components/ProgressReview.svelte';
+  import GoalWizard from '$lib/components/GoalWizard.svelte';
+  import ProgramImport from '$lib/components/ProgramImport.svelte';
+  import ProgramGuide from '$lib/components/ProgramGuide.svelte';
+  import { documentFromProgram } from '$lib/program-documents';
+  import type { ProgramDocument, ProgramTemplate, ProgressReview as ProgressReviewReport } from '$lib/domain';
+  import { GOAL_SOURCES } from '$lib/goals';
+  import { hasAppleHealth, readAppleHealth } from '$lib/health';
   import { client, previewToday, isMockPreview, syncState } from '$lib/client';
   import { APIError } from '$lib/api';
   import { exercises, muscles, templates, readings, foods } from '$lib/catalogue';
@@ -15,17 +23,26 @@
   let loading = $state(true);
   let loggedOut = $state(false);
   let activeTab = $state<Tab>('dashboard');
-  type View = 'tabs' | 'preview' | 'session' | 'program-edit' | 'history';
+  type View = 'goal' | 'tabs' | 'preview' | 'session' | 'program-edit' | 'history';
   type NavigationState = { accountEmail?: string; bodybuilderView?: View; tab?: Tab; sourceTab?: Tab; date?: string; workoutId?: string; sessionId?: string; programId?: string; editWorkoutId?: string };
   let view = $state<View>('tabs');
   let selectedDate = $state(previewToday());
   let previewWorkoutId = $state('');
   let sessionDraft = $state<WorkoutSession | null>(null);
   let programDraft = $state<Program | null>(null);
+  let programLibrary = $state<ProgramTemplate[]>(structuredClone(templates));
+  let libraryLoaded = $state(false);
+  let libraryLoading = $state(false);
+  let libraryError = $state('');
+  let importText = $state('');
+  let guideProgram = $state<Program | null>(null);
   let editWorkoutId = $state('');
   let collapsed = $state<Record<string, boolean>>({});
   let expandedMeal = $state<Record<string, boolean>>({});
   let progressSection = $state('');
+  let progressReport = $state<ProgressReviewReport | null>(null);
+  let progressReviewLoading = $state(false);
+  let progressReviewGeneration=0;
   let breakdown = $state(false);
   let nutritionMode = $state<'consumed' | 'remaining'>('consumed');
   let insightVisible = $state(true);
@@ -81,9 +98,6 @@
   let mealEstimate = $state<MealEstimate | null>(null);
   let estimateItems = $state<FoodEntry[]>([]);
   let copyDate = $state(shiftDate(localDate(), -1));
-  let goalDraft = $state<Goal>('build-muscle');
-  let goalStartDate = $state(localDate());
-  let goalStartWeight = $state(0);
   let weightDraft = $state(0);
   let restSeconds = $state(60);
   let historySession = $state<WorkoutSession | null>(null);
@@ -104,11 +118,13 @@
     { id: 'progress', label: 'Progress', icon: ChartLine }
   ];
   const titles: Record<string, string> = {
+    'progress-review':'Review My Progress',
     checkin: 'Daily Check-in', targets: 'Nutrition Targets', 'food-search': 'Add Food', 'food-edit': 'Food Details',
     'meal-photo': 'Estimate from Photo', warmup: 'Workout Warmup', 'exercise-detail': 'Exercise Guide',
     'exercise-picker': 'Add Exercise', prescription: 'Edit Exercise', effort: 'How did that set feel?',
     templates: 'Choose a Program', 'lesson-edit': 'Your Lesson', 'lesson-detail': 'Lesson Notes',
-    account: 'Account Information', provider: 'AI Settings', ask: 'Ask AI', goal: 'Your Goal',
+    'program-import': 'Import / Export Programs', 'program-guide': 'Program Details',
+    account: 'Account Information', provider: 'AI Settings', ask: 'Ask AI', goal: 'Your Goal', 'goal-details': 'Your Goal Plan', health: 'Apple Health',
     weight: 'Log Your Weight', copy: 'Copy a Food Log', 'history-detail': 'Workout Summary',
     'workout-settings': 'Edit Workout', 'session-menu': 'Workout Options', rest: 'Rest Timer',
     sync: 'Sync Conflict', 'pending-changes': 'Pending Changes', calculate: 'Calculate Nutrition Targets', 'calculate-preview': 'Target Preview'
@@ -153,7 +169,7 @@
       previousToday = currentDay;
     });
   });
-  $effect(() => { client.setEditing?.(sheetOpen || view === 'program-edit' || view === 'session'); });
+  $effect(() => { client.setEditing?.(sheetOpen || view === 'goal' || view === 'program-edit' || view === 'session'); });
   $effect(() => { if (!sheetOpen) providerKey = ''; });
   $effect(() => {
     const signature = calculationSignature();
@@ -224,6 +240,8 @@
   function clearPrivateDrafts() {
     draftRevision++; searchRevision++;
     programDraft = null; sessionDraft = null; historySession = null;
+    progressReport=null;progressReviewLoading=false;progressReviewGeneration++;
+    programLibrary=structuredClone(templates);libraryLoaded=false;libraryLoading=false;libraryError='';importText='';guideProgram=null;
     foodDraft = null; checkInDraft = null; lessonDraft = null; targetDraft = null; providerDraft = null; prescriptionDraft = null;
     question = ''; answer = ''; mealEstimate = null; estimateItems = []; photo = null;
     if (photoURL) URL.revokeObjectURL(photoURL);
@@ -233,7 +251,7 @@
     selectedExerciseId = ''; selectedPrescriptionId = ''; selectedSessionExerciseId = ''; selectedSetId = '';
     previewWorkoutId = ''; editWorkoutId = ''; workoutName = ''; workoutSourceTab = 'workout';
     search = ''; foodResults = []; foodSearching=false; clearTimeout(searchTimer); lessonSearch = ''; lessonFilter = 'All'; selectedMeal = 'Breakfast';
-    weightDraft = 0; goalDraft = 'build-muscle'; goalStartWeight=0; goalStartDate=today; restSeconds = 60; copyDate = shiftDate(today, -1);
+    weightDraft = 0; restSeconds = 60; copyDate = shiftDate(today, -1);
     collapsed = {}; expandedMeal = {}; progressSection = ''; breakdown = false; nutritionMode = 'consumed'; insightVisible = true;
     sheetOpen = false; sheet = ''; sheetTitle = ''; error = ''; notice = ''; clearTimeout(noticeTimer);
     for (const tab of tabs) delete scrolls[tab.id];
@@ -254,7 +272,37 @@
     catch (e) { error = message(e); return false; }
     finally { requests--; }
   }
-  function openSheet(kind: string) { if (sheet === 'provider' && kind !== 'provider') providerKey = ''; if(kind!=='food-search') { searchRevision++; foodSearching=false; clearTimeout(searchTimer); } sheet = kind; sheetTitle = titles[kind] ?? kind; error = ''; sheetOpen = true; }
+  async function loadProgressReview() {
+    const revision=draftRevision,generation=++progressReviewGeneration;progressReviewLoading=true;error='';
+    try {const result=await client.reviewProgress();if(revision===draftRevision && generation===progressReviewGeneration && sheetOpen && sheet==='progress-review')progressReport=result;}
+    catch(e){if(revision===draftRevision && generation===progressReviewGeneration)error=message(e);}
+    finally{if(revision===draftRevision && generation===progressReviewGeneration)progressReviewLoading=false;}
+  }
+  function openProgressReview(){progressReport=null;openSheet('progress-review');void loadProgressReview();}
+  function reviewWorkout(workoutId:string){const workout=activeProgram?.workouts.find(w=>w.id===workoutId);if(workout){sheetOpen=false;showWorkout(workout,'progress');}}
+  function reviewTargets(){selectedDate=today;openTargets();}
+  function openSheet(kind: string) { if (sheet === 'provider' && kind !== 'provider') providerKey = ''; if(kind!=='food-search') { searchRevision++; foodSearching=false; clearTimeout(searchTimer); } sheet = kind; sheetTitle = titles[kind] ?? kind; error = ''; sheetOpen = true; if(kind==='templates' || kind==='program-import') void loadProgramLibrary(); }
+  async function loadProgramLibrary() {
+    const revision=draftRevision;libraryLoading=true;libraryError='';
+    try {const result=await client.listProgramTemplates();if(revision===draftRevision){programLibrary=result;libraryLoaded=true;}}
+    catch(e){if(revision===draftRevision){libraryLoaded=false;libraryError=message(e);}}
+    finally{if(revision===draftRevision)libraryLoading=false;}
+  }
+  function openProgramImport(program?:Program){importText=program ? JSON.stringify(documentFromProgram(program),null,2) : '';openSheet('program-import');}
+  async function importProgramDocument(document:ProgramDocument):Promise<string>{
+    const revision=draftRevision;requests++;
+    try {const snapshot=await client.importProgram(document);if(revision!==draftRevision)throw new Error('The account changed. Open the importer again.');data=snapshot;
+      return $syncState.operations.includes('importProgram')?'Queued for sync. The program will appear after the server acknowledges it.':'Program saved. Choose a date on your schedule to assign a workout.';
+    }finally{requests--;}
+  }
+  async function publishProgramDocument(document:ProgramDocument,baseRevision:number):Promise<string>{
+    if(!libraryLoaded)throw new Error('Reload the shared library before publishing so its latest revision can be checked.');
+    const revision=draftRevision;requests++;
+    try {const template=await client.publishProgram(document,baseRevision);if(revision!==draftRevision)throw new Error('The account changed. Open the library again.');
+      const at=programLibrary.findIndex(p=>p.id===template.id);if(at<0)programLibrary.push(template);else programLibrary[at]=template;
+      return 'Shared plan published. Everyone can choose it from the program library.';
+    }finally{requests--;}
+  }
   function dateTitle(date = selectedDate) {
     const label = date === today ? 'Today' : date === shiftDate(today, 1) ? 'Tomorrow' : date === shiftDate(today, -1) ? 'Yesterday' : new Date(`${date}T12:00:00`).toLocaleDateString('en', { weekday: 'short' });
     return `${label}, ${new Date(`${date}T12:00:00`).toLocaleDateString('en', { month: 'short', day: 'numeric' })}`;
@@ -331,7 +379,7 @@
       const acknowledged = await client.getAcknowledgedSnapshot?.();
       if (revision !== draftRevision || generation !== calculatorGeneration || data?.profile.id !== accountId || !sheetOpen || sheet !== 'calculate') return;
       const prior = [...(acknowledged?.targets ?? [])].filter(target => target.calculation && target.effectiveDate <= effectiveDate).sort((a,b) => b.effectiveDate.localeCompare(a.effectiveDate))[0]?.calculation?.input;
-      if (prior) calculatorDraft = { ...clone(prior), effectiveDate };
+      if (prior) { const { healthEnergy: _health, ...equationInputs } = clone(prior); calculatorDraft = { ...equationInputs, effectiveDate }; }
       const measured = [...(acknowledged?.weights ?? [])].filter(weight => weight.date <= effectiveDate && weight.date <= today).sort((a,b) => b.date.localeCompare(a.date))[0];
       if (calculatorDraft && measured) { calculatorDraft.weightKg = measured.weight; calculatorWeightSource = `Saved weight · ${dateTitle(measured.date)}`; }
       else if (prior) calculatorWeightSource = 'Weight from your previous calculation';
@@ -451,8 +499,18 @@
   function addExercise(exerciseId: string) { if(!editingWorkout) return; editingWorkout.exercises.push({ id: id('prescription'), exerciseId, sets: 3, repsMin: 8, repsMax: 12, restSeconds: 60 }); sheetOpen = false; }
   function moveExercise(index: number, amount: number) { if (!editingWorkout) return; const next = index + amount; if(next < 0 || next >= editingWorkout.exercises.length) return; const list = [...editingWorkout.exercises]; [list[index],list[next]] = [list[next],list[index]]; editingWorkout.exercises = list; }
   function showHistory() { workoutSourceTab = activeTab; navigate('history'); }
-  function openGoal() { goalDraft = data?.profile.goal ?? 'build-muscle'; goalStartDate=data?.profile.goalStartedAt ?? today; goalStartWeight=displayWeight(data?.profile.startWeight || currentWeight?.weight || 0); openSheet('goal'); }
-  async function saveGoal(event: SubmitEvent) { event.preventDefault(); if(await mutate(()=>client.updateProfile({goal:goalDraft,goalStartedAt:goalStartDate,startWeight:toKg(goalStartWeight)}),true)) toast('Goal updated'); }
+  function openGoal() { workoutSourceTab=activeTab; sheetOpen=false; navigate('goal'); }
+  async function createGoalPlan(input: import('$lib/domain').CreateGoalPlan) {
+    const accountId=data?.profile.id;
+    if (!(await mutate(()=>client.createGoalPlan(input)))) throw new Error(error || 'Could not create the goal plan.');
+    if(data?.profile.id!==accountId)return;
+    goBack();toast($syncState.pending ? 'Goal plan is pending. Connect to apply it.' : 'Goal, workout schedule and nutrition targets created');
+  }
+  async function syncAppleHealth() {
+    const revision=draftRevision;error='';requests++;
+    try { const energy=await readAppleHealth();if(revision!==draftRevision)return;const saved=await mutate(()=>client.saveHealthEnergy(energy));if(saved && revision===draftRevision)toast('Apple Health energy synced. Review a new goal to update calorie targets.'); }
+    catch(e){if(revision===draftRevision)error=message(e);}finally{requests--;}
+  }
   function goalName(goal: Goal | undefined) { return goal === 'lose-fat' ? 'Lose Fat' : goal === 'maintain' ? 'Maintain Weight' : 'Build Muscle'; }
   function habitDays() { const last7 = Array.from({length:7}, (_,i) => shiftDate(today,-i)); return last7.filter(day => data?.foodEntries.some(f => f.date === day)).length; }
   function consistency() { const scheduled = data?.schedule.filter(s => s.workoutId && s.date <= today && s.date >= shiftDate(today,-20)) ?? []; return scheduled.length ? Math.min(100, Math.round(scheduled.filter(s => data?.sessions.some(w => w.date === s.date && w.workoutId === s.workoutId && w.finishedAt)).length / scheduled.length * 100)) : 0; }
@@ -502,6 +560,8 @@
       </form>
     </section>
   </main>
+{:else if view === 'goal'}
+  {#key data.profile.id}<GoalWizard snapshot={data} {today} oncancel={goBack} oncreate={createGoalPlan}/>{/key}
 {:else}
   <div class="app-shell" class:in-workout={view !== 'tabs'}>
     {#if error && !sheetOpen}<div class="error-banner" role="alert"><span>{error}</span><button class="icon-button" aria-label="Dismiss error" onclick={() => error = ''}><X size={18}/></button></div>{/if}
@@ -567,12 +627,14 @@
               <button class="icon-button" aria-label={`Options for ${dayName(day)} workout`} onclick={() => { selectedDate = day; editWorkoutId = workout?.id ?? ''; openSheet('session-menu'); }}><EllipsisVertical size={21}/></button>
             </div></div>
           {/each}</div>
-          <div class="workout-bottom-actions"><button class="secondary-button" onclick={() => openSheet('templates')}><Plus size={17}/>Choose a Program</button><button class="quiet-link" onclick={showHistory}><History size={18}/>Workout History</button></div>
+          <div class="workout-bottom-actions"><button class="secondary-button" onclick={() => openProgramImport()}><FileText size={17}/>Import / Export</button><button class="secondary-button" onclick={() => openSheet('templates')}><Plus size={17}/>Choose a Program</button><button class="quiet-link" onclick={showHistory}><History size={18}/>Workout History</button></div>
         </main>
       {:else if activeTab === 'progress'}
         <main class="tab-content progress-content">
           <header class="standard-header"><h1>Progress</h1>{@render accountButtons()}</header>
           <section class="goal-card"><div class="goal-label"><span>CURRENT GOAL</span><button onclick={openGoal}>Change <ChevronRight size={15}/></button></div><h1>{goalName(data.profile.goal)}</h1><p>{data.profile.goal === 'build-muscle' ? 'Stronger, one workout at a time' : data.profile.goal === 'lose-fat' ? 'Build habits that last' : 'Keep showing up for yourself'}</p><div class="goal-meta"><span><Calendar size={15}/>Started <b>{new Date(`${data.profile.goalStartedAt}T12:00:00`).toLocaleDateString('en', {month:'short',day:'numeric',year:'numeric'})}</b></span>{#if data.profile.startWeight>0}<span><Scale size={15}/><b>{displayWeight(data.profile.startWeight)} {data.profile.unit}</b> at start</span>{:else}<button class="goal-start-weight" onclick={openGoal}><Scale size={15}/>Set your starting weight</button>{/if}</div></section>
+          {#if data.goalPlans?.length}<button class="quiet-link" onclick={()=>openSheet('goal-details')}>View Goal Plan & Research</button>{/if}
+          <button class="secondary-button" onclick={openProgressReview}><ChartLine size={19}/>Review My Progress</button>
           <section class="progress-card"><button class="progress-summary" onclick={() => progressSection = progressSection === 'weight' ? '' : 'weight'} aria-expanded={progressSection === 'weight'}><span class="icon-box"><Scale size={28}/></span><span class="progress-copy"><small>WEIGHT</small><strong>{currentWeight ? displayWeight(currentWeight.weight) : '—'} <em>{data.profile.unit}</em></strong><span>Last logged {currentWeight?.date === today ? 'today' : currentWeight?.date ?? 'never'}</span></span><span class="progress-side"><b class="weight-change">{currentWeight && previousWeight ? `${currentWeight.weight >= previousWeight.weight ? '+' : ''}${(displayWeight(currentWeight.weight)-displayWeight(previousWeight.weight)).toFixed(1)}` : '—'} {data.profile.unit}</b><small>Last 14 days</small></span><ChevronDown size={18} class={progressSection === 'weight' ? 'rotated' : ''}/></button>{#if progressSection === 'weight'}<div class="progress-expanded">{@render weightChart()}<button class="secondary-button" onclick={openWeight}><Plus size={17}/>Log Weight</button></div>{/if}</section>
           <section class="progress-card"><button class="progress-summary" onclick={() => progressSection = progressSection === 'nutrition' ? '' : 'nutrition'} aria-expanded={progressSection === 'nutrition'}><span class="icon-box"><Utensils size={28}/></span><span class="progress-copy"><small>NUTRITION</small><strong>{habitDays()} of 7 <em>days</em></strong><span>Logged this week</span></span><span class="progress-side"><b class="neutral-badge">{Math.max(0,Math.round(todayTargets.calories - todayNutrients.calories)).toLocaleString()} Cal</b><small>Remaining Today</small></span><ChevronDown size={18} class={progressSection === 'nutrition' ? 'rotated' : ''}/></button>{#if progressSection === 'nutrition'}<div class="progress-expanded"><div class="nutrition-history">{#each Array.from({length:7}, (_,i) => shiftDate(today,-6+i)) as day}{@const total = sumNutrients(data.foodEntries.filter(f => f.date === day))}<div><span>{dayName(day)}</span><i style:height="{Math.max(5,progress(total.calories,targetsForDate(data,day).calories)*.85)}px"></i><small>{Math.round(total.calories)}</small></div>{/each}</div><button class="quiet-link" onclick={() => selectTab('nutrition')}>Open your food log <ArrowRight size={16}/></button></div>{/if}</section>
           <section class="progress-card"><button class="progress-summary" onclick={() => progressSection = progressSection === 'workouts' ? '' : 'workouts'} aria-expanded={progressSection === 'workouts'}><span class="icon-box"><Dumbbell size={28}/></span><span class="progress-copy"><small>WORKOUTS</small><strong>{consistency()}% <em>consistent</em></strong><span>Last 3 weeks</span></span><span class="progress-side"><b class="trophy-badge"><Trophy size={14}/>{finishedSessions.filter(s => weekDates(today).includes(s.date)).length}</b><small>This week</small></span><ChevronDown size={18} class={progressSection === 'workouts' ? 'rotated' : ''}/></button>{#if progressSection === 'workouts'}<div class="progress-expanded"><p class="muted">{finishedSessions.length} workouts completed. Every session counts.</p><button class="secondary-button" onclick={showHistory}><History size={17}/>View Workout History</button></div>{/if}</section>
@@ -611,7 +673,7 @@
       {#if remainingRest > 0}<div class="rest-floating" role="status"><Timer size={22}/><span><small>Rest timer</small><b data-testid="rest-countdown">{time(remainingRest)}</b></span><button aria-label="Add 30 seconds rest" onclick={() => { if(sessionDraft) sessionDraft.restDeadline = new Date(new Date(sessionDraft.restDeadline!).getTime()+30000).toISOString(); persistSession(); }}>+30s</button><button class="icon-button" aria-label="Skip rest" onclick={() => { if(sessionDraft) sessionDraft.restDeadline = null; persistSession(); }}><X size={20}/></button></div>{/if}
     {:else if view === 'program-edit' && programDraft}
       <header class="edit-program-header"><button class="icon-button" aria-label="Cancel editing program" onclick={goBack}><ArrowLeft size={25}/></button><h1>Edit Program</h1><button class="save-program-button" disabled={busy} onclick={saveProgram}>Save</button></header>
-      <main class="edit-program-content"><label for="program-name">Program name</label><input id="program-name" bind:value={programDraft.name} maxlength="100"/><div class="workout-picker">{#each programDraft.workouts as workout}<button class:active={editWorkoutId === workout.id} onclick={() => editWorkoutId = workout.id}>{workout.name}</button>{/each}</div>
+      <main class="edit-program-content"><button class="secondary-button" onclick={() => openProgramImport(programDraft!)}>Export Program JSON</button>{#if programDraft.details}<button class="quiet-link" onclick={() => { guideProgram=clone(programDraft!);openSheet('program-guide'); }}>Progression &amp; Nutrition Guidance</button>{/if}<label for="program-name">Program name</label><input id="program-name" bind:value={programDraft.name} maxlength="100"/><div class="workout-picker">{#each programDraft.workouts as workout}<button class:active={editWorkoutId === workout.id} onclick={() => editWorkoutId = workout.id}>{workout.name}</button>{/each}</div>
         {#if editingWorkout}<section class="program-day-card"><div class="section-heading"><div><small class="muted">DAY {programDraft.workouts.indexOf(editingWorkout)+1}</small><h2>{editingWorkout.name}</h2></div><button class="icon-button" aria-label="Rename workout" onclick={() => { workoutName = editingWorkout.name; openSheet('workout-settings'); }}><Pencil size={20}/></button></div><div class="thin-divider"></div><h3>Target Muscles</h3><div class="program-muscles">{#each editingWorkout.muscles as muscle}<div><img src={muscle.image} alt=""/><span>{muscle.name}</span></div>{/each}</div><div class="section-heading"><h3>Exercises</h3><button class="icon-button blue" aria-label="Add exercise" onclick={() => { search=''; openSheet('exercise-picker'); }}><Plus size={23}/></button></div><div class="editing-exercises">{#each editingWorkout.exercises as p,index (p.id)}{@const exercise=exerciseFor(p.exerciseId)}<article class="editing-exercise"><button class="editing-exercise-main" onclick={() => editPrescription(p)}>{@render exerciseImage(exercise)}<span>{#if p.superset}<small class="superset-label">{p.sets} SETS · SUPERSET</small>{/if}<strong>{exercise.name}</strong><small><b>{p.sets} sets</b> · {reps(p)}</small></span></button><div class="editing-actions"><button class="icon-button" disabled={index===0} aria-label={`Move ${exercise.name} up`} onclick={() => moveExercise(index,-1)}><ArrowUp size={17}/></button><button class="icon-button" disabled={index===editingWorkout.exercises.length-1} aria-label={`Move ${exercise.name} down`} onclick={() => moveExercise(index,1)}><ArrowDown size={17}/></button><button class="icon-button danger" aria-label={`Remove ${exercise.name}`} onclick={() => { if(editingWorkout) editingWorkout.exercises = editingWorkout.exercises.filter(item => item.id !== p.id); }}><Trash2 size={17}/></button></div></article>{/each}</div><button class="outline-button add-exercise-button" onclick={() => { search=''; openSheet('exercise-picker'); }}><Plus size={18}/>Add Exercise</button></section>{/if}
       </main>
     {:else if view === 'history'}
@@ -624,14 +686,16 @@
 {#if busy}<div class="request-progress" aria-label="Saving" role="status"></div>{/if}
 <Sheet bind:open={sheetOpen} title={sheetTitle} description={sheet === 'effort' ? 'Choose your own effort level. Your effort rating is separate from completing a set.' : ''}>
   {#if error}<div class="form-error" role="alert">{error}</div>{/if}
-  {#if sheet === 'checkin' && checkInDraft}
+  {#if sheet === 'progress-review'}
+    {#if progressReport}<ProgressReview report={progressReport} onworkout={reviewWorkout} onnutrition={reviewTargets} onrefresh={()=>void loadProgressReview()} refreshing={progressReviewLoading}/>{:else if progressReviewLoading}<p role="status" class="muted">Reviewing your recorded progress…</p>{:else}<button class="secondary-button" onclick={()=>void loadProgressReview()}>Retry Review</button>{/if}
+  {:else if sheet === 'checkin' && checkInDraft}
     <form onsubmit={saveCheckIn}><p class="muted form-intro">{dateTitle(checkInDraft.date)} · a moment to check in with yourself.</p><label for="checkin-weight">Weight ({data?.profile.unit ?? 'kg'})</label><input id="checkin-weight" type="number" min="1" max="1000" step=".1" inputmode="decimal" bind:value={weightDraft} required/><label for="checkin-notes">Notes</label><textarea id="checkin-notes" bind:value={checkInDraft.notes} placeholder="How was your day?" rows="4" maxlength="3000"></textarea><button class="primary-button" disabled={busy}>Save Check-in</button></form>
   {:else if sheet === 'weight'}
     <form onsubmit={async(e) => {e.preventDefault(); if(await mutate(() => client.saveWeight({id:id('weight'),date:selectedDate,weight:toKg(weightDraft)}),true)) toast('Weight saved'); }}><p class="muted form-intro">{dateTitle()}</p><label for="weight-value">Weight ({data?.profile.unit ?? 'kg'})</label><input id="weight-value" type="number" min="1" max="1000" step=".1" inputmode="decimal" bind:value={weightDraft} required/><button class="primary-button" disabled={busy}>Save Weight</button></form>
   {:else if sheet === 'targets' && targetDraft}
     <p class="muted form-intro">Calculate a starting point, or set your own targets. Changes apply from {dateTitle(targetDraft.effectiveDate).toLowerCase()} onward.</p>
     <button class="secondary-button calculator-entry" disabled={busy} onclick={openCalculator}><ChartLine size={18}/>Calculate Targets</button>
-    {#if targetDraft.calculation}<div class="calculation-saved"><span class="eyebrow">{targetDraft.mode === 'manual' ? 'MANUAL OVERRIDE' : 'CALCULATED TARGETS'}</span><p>Mifflin–St Jeor · {targetDraft.calculation.input.proteinPerKg} g/kg protein · {targetDraft.calculation.input.fatPercent}% fat</p><small>Original calculation: {targetDraft.calculation.input.effectiveDate}. Editing values keeps these inputs for reference.</small></div>{/if}
+    {#if targetDraft.calculation}<div class="calculation-saved"><span class="eyebrow">{targetDraft.mode === 'manual' ? 'MANUAL OVERRIDE' : 'CALCULATED TARGETS'}</span><p>{targetDraft.calculation.version === 'apple-health-energy-v1' ? 'Apple Health resting + active energy' : 'Mifflin–St Jeor'} · {targetDraft.calculation.input.proteinPerKg} g/kg protein · {targetDraft.calculation.input.fatPercent}% fat</p><small>Original calculation: {targetDraft.calculation.input.effectiveDate}. Editing values keeps these inputs for reference.</small></div>{/if}
     <form onsubmit={saveManualTargets}><div class="form-grid"><div><label for="target-calories">Calories</label><input id="target-calories" type="number" min="500" max="10000" inputmode="numeric" bind:value={targetDraft.calories} required/></div><div><label for="target-protein">Protein (g)</label><input id="target-protein" type="number" min="0" max="1000" inputmode="numeric" bind:value={targetDraft.protein} required/></div><div><label for="target-carbs">Carbs (g)</label><input id="target-carbs" type="number" min="0" max="2000" inputmode="numeric" bind:value={targetDraft.carbs} required/></div><div><label for="target-fat">Fat (g)</label><input id="target-fat" type="number" min="0" max="1000" inputmode="numeric" bind:value={targetDraft.fat} required/></div></div><button class="primary-button" disabled={busy}>Save Targets</button></form>
   {:else if sheet === 'calculate' && calculatorDraft}
     <p class="muted form-intro">Enter your details, then review the calorie and macro estimate. Your saved targets stay as they are until you apply it.</p>
@@ -679,8 +743,15 @@
     <div class="effort-options">{#each [{value:'easy',label:'Easy',description:'Comfortable. Plenty left in the tank.',color:'green'},{value:'medium',label:'Medium',description:'Challenging, but under control.',color:'blue'},{value:'hard',label:'Hard',description:'A tough set. You gave it your all.',color:'yellow'}] as option}<button class={`effort-option ${option.color}`} disabled={busy} onclick={()=>setEffort(option.value as Effort)}><span class="effort-dot"></span><span><strong>{option.label}</strong><small>{option.description}</small></span><ChevronRight size={20}/></button>{/each}<button class="quiet-link" disabled={busy} onclick={()=>setEffort(null)}>Clear effort rating</button></div>
   {:else if sheet === 'rest'}
     <form onsubmit={async(e)=>{e.preventDefault(); if(sessionDraft) { sessionDraft.restDeadline=new Date(Date.now()+restSeconds*1000).toISOString(); sessionDraft.restDuration=restSeconds; if(await persistSession()) sheetOpen=false; } }}><label for="rest-duration">Rest duration (seconds)</label><input id="rest-duration" type="number" min="5" max="900" step="5" inputmode="numeric" bind:value={restSeconds} required/><div class="rest-presets">{#each [30,60,90,120] as seconds}<button type="button" class:active={restSeconds===seconds} onclick={()=>restSeconds=seconds}>{time(seconds)}</button>{/each}</div><button class="primary-button" disabled={busy}><Timer size={18}/>Start Rest Timer</button></form>
+  {:else if sheet === 'program-import' && data}
+    {#if libraryError}<p role="alert" class="source-label">{libraryError}</p><button class="quiet-link" disabled={libraryLoading} onclick={() => loadProgramLibrary()}>Reload Library</button>{/if}
+    <ProgramImport programs={data.programs} templates={programLibrary} admin={data.profile.role==='admin'} initialText={importText} sharedReady={libraryLoaded && !libraryLoading} onimport={importProgramDocument} onpublish={publishProgramDocument}/>
+  {:else if sheet === 'program-guide' && guideProgram}
+    <ProgramGuide program={guideProgram}/><button class="secondary-button" onclick={() => openProgramImport(guideProgram!)}>Export Plan JSON</button>
   {:else if sheet === 'templates'}
-    <p class="muted form-intro">Choose a starting point. Your program is a private, editable copy. Select a day on your schedule to assign its workouts.</p>{#if data && data.programs.length>1}<h3 class="guide-subtitle">Your Programs</h3><div class="action-list">{#each data.programs as program}<button disabled={busy} onclick={()=>mutate(()=>client.saveProgram(clone(program)),true)}><Dumbbell size={18}/>{program.name}{#if program.id===data.activeProgramId}<Check size={17}/>{/if}</button>{/each}</div><h3 class="guide-subtitle">Starter Templates</h3>{/if}<div class="template-list">{#each templates as template}<article class="template-card"><span class="eyebrow">{template.level} · {template.daysPerWeek} DAYS / WEEK</span><h3>{template.name}</h3><p>{template.description}</p>{#if template.sourceName}<p class="source-label">{template.adaptationNote ? 'Adapted from' : 'Source:'} {template.sourceName}</p>{/if}{#if template.adaptationNote}<p class="source-label">{template.adaptationNote}</p>{/if}<div class="template-detail"><Dumbbell size={15}/>{template.equipment}</div><div class="template-actions"><a href={template.source} target="_blank" rel="noopener noreferrer">View source <ExternalLink size={13}/></a><button class="primary-button" disabled={busy} onclick={()=>useProgram(template.id)}>Use Program</button></div></article>{/each}</div>
+    <button class="secondary-button" onclick={() => openProgramImport()}><FileText size={17}/>Import / Export Programs</button>
+    {#if libraryLoading}<p class="source-label" role="status">Loading program library…</p>{/if}{#if libraryError}<p class="source-label" role="alert">{libraryError} Showing bundled plans.</p><button class="quiet-link" onclick={() => loadProgramLibrary()}>Reload Library</button>{/if}
+    <p class="muted form-intro">Choose a starting point. Your program is a private, editable copy. Select a day on your schedule to assign its workouts.</p>{#if data && data.programs.length>1}<h3 class="guide-subtitle">Your Programs</h3><div class="action-list">{#each data.programs as program}<button disabled={busy} onclick={()=>mutate(()=>client.saveProgram(clone(program)),true)}><Dumbbell size={18}/>{program.name}{#if program.id===data.activeProgramId}<Check size={17}/>{/if}</button>{/each}</div><h3 class="guide-subtitle">Starter Templates</h3>{/if}<div class="template-list">{#each programLibrary as template}<article class="template-card"><span class="eyebrow">{template.level} · {template.daysPerWeek} DAYS / WEEK</span><h3>{template.name}</h3><p>{template.description}</p>{#if template.sourceName}<p class="source-label">{template.details ? 'Evidence:' : template.adaptationNote ? 'Adapted from' : 'Source:'} {template.sourceName}</p>{/if}{#if template.adaptationNote}<p class="source-label">{template.adaptationNote}</p>{/if}<div class="template-detail"><Dumbbell size={15}/>{template.equipment}</div><button class="quiet-link" onclick={() => {guideProgram=clone(template);openSheet('program-guide');}}>Preview Plan</button><div class="template-actions"><a href={template.source} target="_blank" rel="noopener noreferrer">View source <ExternalLink size={13}/></a><button class="primary-button" disabled={busy} onclick={()=>useProgram(template.id)}>Use Program</button></div></article>{/each}</div>
   {:else if sheet === 'exercise-picker'}
     <div class="search-field"><Search size={20}/><input aria-label="Search exercises" bind:value={search} placeholder="Search an exercise"/></div><div class="exercise-picker-results">{#each exercises.filter(e=>`${e.name} ${e.equipment}`.toLowerCase().includes(search.toLowerCase())) as exercise}<button onclick={()=>addExercise(exercise.id)}>{@render exerciseImage(exercise)}<span><strong>{exercise.name}</strong><small>{exercise.equipment}</small></span><Plus size={20} class="blue"/></button>{/each}</div>
   {:else if sheet === 'prescription' && prescriptionDraft}
@@ -696,7 +767,8 @@
     {#if isMockPreview}<div class="preview-callout"><Info size={17}/><span>Local preview data · saved on this browser for this email. Live accounts and device sync come with the backend.</span></div>{:else}<p class="source-label">Your records are private to your account. {$syncState.pending ? `${$syncState.pending} changes are waiting to sync from this device.` : 'Saved changes sync across your signed-in devices.'}</p>{/if}
     <form onsubmit={saveProfile}><label for="profile-name">Display name</label><input id="profile-name" bind:value={profileName} required maxlength="80"/><label for="profile-unit">Weight unit</label><select id="profile-unit" bind:value={profileUnit}><option value="kg">Kilograms (kg)</option><option value="lb">Pounds (lb)</option></select>{#if !isMockPreview}<label for="profile-timezone">Timezone</label><input id="profile-timezone" bind:value={profileTimezone} placeholder="Asia/Singapore" required maxlength="100"/><p class="source-label">Daily logs follow this timezone.</p>{/if}<button class="primary-button" disabled={busy}>Save Account</button></form>
     {#if isMockPreview}<div class="thin-divider"></div><form onsubmit={switchAccount}><label for="preview-email">Switch preview account</label><input id="preview-email" type="email" bind:value={profileEmail} required/><button class="secondary-button" disabled={busy}><UserCircle size={18}/>Switch Account</button></form>{/if}
-    <div class="action-list account-actions"><button onclick={()=>{question=''; answer=''; openSheet('ask');}}><MessageCircle size={19}/>Ask AI <ChevronRight size={18}/></button>{#if data.profile.role==='admin'}<button onclick={openProvider}><Settings size={19}/>AI Provider Settings <ChevronRight size={18}/></button>{/if}{#if !isMockPreview}<button disabled={busy} onclick={refresh}><RotateCcw size={19}/>Sync Now <ChevronRight size={18}/></button>{/if}{#if isMockPreview}<button disabled={busy} onclick={async()=>{if(await mutate(()=>client.resetPreview(),true)) { clearPrivateDrafts(); selectedDate=today; activeTab='dashboard'; view='tabs'; replaceState('',navigationState('tabs')); toast('Preview data restored'); } }}><RotateCcw size={19}/>Reset Preview Data</button>{/if}<button disabled={busy} onclick={signOut}><LogOut size={19}/>Sign Out</button></div>
+    <div class="action-list account-actions"><button onclick={()=>{question=''; answer=''; openSheet('ask');}}><MessageCircle size={19}/>Ask AI <ChevronRight size={18}/></button>{#if data.profile.role==='admin'}<button onclick={() => openProgramImport()}><BookOpen size={19}/>Manage Program Library <ChevronRight size={18}/></button><button onclick={openProvider}><Settings size={19}/>AI Provider Settings <ChevronRight size={18}/></button>{/if}{#if !isMockPreview}<button disabled={busy} onclick={refresh}><RotateCcw size={19}/>Sync Now <ChevronRight size={18}/></button>{/if}{#if isMockPreview}<button disabled={busy} onclick={async()=>{if(await mutate(()=>client.resetPreview(),true)) { clearPrivateDrafts(); selectedDate=today; activeTab='dashboard'; view='tabs'; replaceState('',navigationState('tabs')); toast('Preview data restored'); } }}><RotateCcw size={19}/>Reset Preview Data</button>{/if}<button disabled={busy} onclick={signOut}><LogOut size={19}/>Sign Out</button></div>
+    <button class="secondary-button" onclick={()=>openSheet('health')}>Apple Health</button>
   {:else if sheet === 'provider' && providerDraft}
     {#if isMockPreview}<div class="preview-callout"><Info size={17}/><span>Preview configuration only. Real provider keys are added securely with the backend.</span></div>{:else}<p class="muted form-intro">Configure AI for all accounts. The key is stored securely on the server and is never returned to your device.</p><p class="source-label">{providerDraft.configured ? 'A key is saved. Leave the API key blank to keep it.' : 'No key is saved. Add an API key to enable AI.'}</p>{/if}
     <form onsubmit={saveProvider}><label for="provider-name">Provider</label><select id="provider-name" bind:value={providerDraft.provider}><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option><option value="openrouter">OpenRouter</option></select><label for="provider-model">Model</label><input id="provider-model" bind:value={providerDraft.model} placeholder="Model identifier" required maxlength="150"/>{#if !isMockPreview}<label for="provider-key">API key</label><input id="provider-key" type="password" bind:value={providerKey} autocomplete="off" placeholder={providerDraft.configured ? 'Leave blank to keep saved key' : 'Provider API key'} maxlength="4096"/><label for="provider-limit">Daily request limit</label><input id="provider-limit" type="number" min="1" max="1000" step="1" bind:value={providerDraft.dailyRequestLimit} placeholder="20" inputmode="numeric"/>{/if}<label class="checkbox-label"><input type="checkbox" bind:checked={providerDraft.enabled}/>{isMockPreview ? 'Enable AI preview' : 'Enable AI'}</label><button class="primary-button" disabled={busy}>Save AI Settings</button></form>
@@ -709,8 +781,21 @@
     <div class="sync-options"><section><h3>Keep My Changes</h3><p>Apply your pending edits over the latest saved data. This can replace values changed by another device.</p><button class="primary-button" disabled={busy} onclick={()=>resolveConflict('keep-local')}>Keep My Changes</button></section><section><h3>Use Latest Saved Data</h3><p>Discard all pending edits on this device and open the data already saved to your account.</p><button class="secondary-button" disabled={busy} onclick={()=>resolveConflict('use-server')}>Use Latest Saved Data</button></section></div>
   {:else if sheet === 'pending-changes'}
     <p class="form-intro muted">{$syncState.message || 'These changes could not be synced.'} Your {$syncState.pending} pending changes remain on this device.</p><p class="source-label">Discarding pending changes removes them from this device. Records already saved to your account stay intact.</p><button class="secondary-button" disabled={busy} onclick={refresh}>Retry Sync</button><button class="danger-link" disabled={busy} onclick={async()=>{if(client.discardPending && await mutate(()=>client.discardPending!(),true)) { sessionDraft=null; programDraft=null; view='tabs'; replaceState('',navigationState('tabs')); toast('Pending changes discarded'); } }}>Discard Pending Changes</button>
-  {:else if sheet === 'goal'}
-    <form onsubmit={saveGoal}><p class="muted form-intro">Choose the direction for your next chapter.</p><div class="goal-options">{#each [{id:'build-muscle',title:'Build Muscle',note:'Train for strength and growth'},{id:'maintain',title:'Maintain Weight',note:'Keep your habits and feel your best'},{id:'lose-fat',title:'Lose Fat',note:'Support a steady, sustainable change'}] as goal}<label class:active={goalDraft===goal.id}><input type="radio" name="goal" value={goal.id} bind:group={goalDraft}/><span><strong>{goal.title}</strong><small>{goal.note}</small></span></label>{/each}</div><label for="goal-start-date">Goal start date</label><input id="goal-start-date" type="date" bind:value={goalStartDate} required/><label for="goal-start-weight">Starting weight ({data?.profile.unit ?? 'kg'})</label><input id="goal-start-weight" type="number" min={isMockPreview ? 1 : 0} max="1000" step=".1" inputmode="decimal" bind:value={goalStartWeight} required/>{#if !isMockPreview}<p class="source-label">Use 0 if you have not recorded a starting weight.</p>{/if}<button class="primary-button" disabled={busy}>Save Goal</button></form>
+  {:else if sheet === 'goal-details' && data?.goalPlans?.length}
+    {@const plan=data.goalPlans.at(-1)!}
+    <h3>{data.programs.find(p=>p.id===plan.programId)?.name ?? 'Your starting plan'}</h3>
+    <p class="muted">{plan.answers.experience} · {plan.answers.daysPerWeek} days/week · {plan.answers.sessionMinutes} minute budget · Starts {plan.answers.startDate}</p>
+    <p>{plan.targets.calories} kcal · {plan.targets.protein}g protein · {plan.targets.carbs}g carbs · {plan.targets.fat}g fat per day at creation</p>
+    {#each plan.rationale as reason}<p class="source-label">{reason}</p>{/each}
+    {#each GOAL_SOURCES as source}<a class="source-link" href={source.url} target="_blank" rel="noopener noreferrer">{source.name}<ExternalLink size={15}/></a>{/each}
+    <p class="source-label">Starting plan details are retained here. Check Nutrition and your program editor for later manual changes.</p>
+    <button class="primary-button" onclick={openGoal}>Create New Goal</button>
+  {:else if sheet === 'health'}
+    <p class="muted">The iPhone app reads resting and active energy for the last 14 completed days. Seven complete days are needed. Data is synced to your private account when you press Sync.</p>
+    {#if data?.healthEnergy}<p>{data.healthEnergy.days.length} days · Last synced {new Date(data.healthEnergy.syncedAt).toLocaleString()}</p><p class="source-label">{data.healthEnergy.sources.join(', ')} · {data.healthEnergy.timezone}</p>{/if}
+    {#if hasAppleHealth()}<button class="primary-button" disabled={busy} onclick={syncAppleHealth}>Sync Apple Health</button>{:else}<p class="source-label">Open BodyBuilder’s iPhone app for HealthKit access. The PWA uses the equation estimate.</p>{/if}
+    <p class="source-label">Sync does not silently change your food targets. Create a goal to review the new estimate. To revoke access, use Apple Health’s app permissions.</p>
+    {#if data?.healthEnergy}<button class="danger-link" disabled={busy} onclick={()=>mutate(()=>client.saveHealthEnergy(null),true)}>Remove saved energy summary</button><p class="source-label">Previously saved goal calculations retain their original energy provenance.</p>{/if}
   {:else if sheet === 'history-detail' && historySession}
     <div class="workout-summary-mark"><CheckCircle2 size={37}/></div><h2 class="summary-title">{historySession.name}</h2><p class="summary-date">{new Date(historySession.startedAt).toLocaleDateString('en', {weekday:'long',month:'short',day:'numeric'})}</p><div class="summary-stats"><div><Timer size={20}/><b>{elapsed(historySession)}</b><span>Duration</span></div><div><Dumbbell size={20}/><b>{historySession.exercises.reduce((n,e)=>n+e.sets.filter(s=>s.completed).length,0)}</b><span>Sets completed</span></div><div><Trophy size={20}/><b>{Math.round(historySession.exercises.reduce((n,e)=>n+e.sets.filter(s=>s.completed).reduce((sum,set)=>sum+set.weight*set.reps,0),0)).toLocaleString()}</b><span>Volume (kg)</span></div></div><div class="history-exercises">{#each historySession.exercises as exercise}<div><strong>{exerciseFor(exercise.exerciseId).name}</strong><small>{exercise.sets.filter(s=>s.completed).length}/{exercise.sets.length} sets completed</small><p>{exercise.sets.map(s=>`${s.weight ? `${s.weight}kg × ` : ''}${s.reps} reps${s.effort ? ` · ${s.effort}` : ''}`).join(' / ')}</p>{#if exercise.notes}<p class="muted">{exercise.notes}</p>{/if}</div>{/each}</div>
   {/if}

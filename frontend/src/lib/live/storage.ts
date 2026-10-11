@@ -2,7 +2,7 @@ import type { AppSnapshot } from '../domain';
 import type { Session } from '../api';
 
 export const SESSION_KEY = 'bodybuilder.live.session';
-export type Operation = 'updateProfile' | 'saveProgram' | 'useTemplate' | 'assignWorkout' | 'startWorkout' |
+export type Operation = 'importProgram' | 'createGoalPlan' | 'saveHealthEnergy' | 'updateProfile' | 'saveProgram' | 'useTemplate' | 'assignWorkout' | 'startWorkout' |
   'saveSession' | 'finishSession' | 'saveFood' | 'deleteFood' | 'copyFoods' | 'saveTargets' |
   'saveCheckIn' | 'saveWeight' | 'saveLesson' | 'deleteLesson';
 export type PendingMutation = {

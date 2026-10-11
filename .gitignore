@@ -15,3 +15,10 @@ ci-artifacts/
 __pycache__/
 backend/training-api
 backend/tmp/
+
+# Native build output and developer-specific signing state
+native/ios/.build/
+native/ios/.swiftpm/
+DerivedData/
+*.xcuserstate
+xcuserdata/

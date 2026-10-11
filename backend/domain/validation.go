@@ -99,6 +99,11 @@ func ValidatePrescription(p Prescription) error {
 	return Text(p.Superset, "superset", 180, true)
 }
 func ValidateProgram(p Program, knownExercises map[string]bool, knownMuscles map[string]bool) error {
+	if p.Details != nil {
+		if err := ValidateProgramMetadata(*p.Details); err != nil {
+			return err
+		}
+	}
 	if err := Identifier(p.ID); err != nil {
 		return err
 	}
@@ -130,6 +135,11 @@ func ValidateProgram(p Program, knownExercises map[string]bool, knownMuscles map
 	}
 	workouts := map[string]bool{}
 	for _, w := range p.Workouts {
+		if w.Key != "" {
+			if err := ValidateProgramKey(w.Key); err != nil {
+				return err
+			}
+		}
 		if err := Identifier(w.ID); err != nil {
 			return err
 		}
@@ -145,6 +155,11 @@ func ValidateProgram(p Program, knownExercises map[string]bool, knownMuscles map
 		}
 		ids := map[string]bool{}
 		for _, p := range w.Exercises {
+			if p.Key != "" {
+				if err := ValidateProgramKey(p.Key); err != nil {
+					return err
+				}
+			}
 			if err := ValidatePrescription(p); err != nil {
 				return err
 			}

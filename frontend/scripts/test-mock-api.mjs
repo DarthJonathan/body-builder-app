@@ -38,6 +38,9 @@ try {
   const { createMockClient } = compiled('./mock/client.js');
   const { localDate, shiftDate } = compiled('./domain.js');
   const { templates, exercises, muscles, readings } = compiled('./catalogue.js');
+  const { parseProgramText, validateProgramDocument, documentFromProgram, sameProgramDocument } = compiled('./program-documents.js');
+  const documents = JSON.parse(await readFile(path.join(frontend,'src/lib/program-library.json'),'utf8'));
+  const knownExercises = new Set(exercises.map(e=>e.id));
   const { DEFAULT_PREVIEW_EMAIL, FAIL_NEXT_KEY, DELAY_KEY, ACTIVE_KEY, accountKey } = compiled('./mock/storage.js');
   const today = localDate();
 
@@ -51,6 +54,65 @@ try {
   async function rejects(request, status, code) {
     await assert.rejects(request, error => error.name === 'MockApiError' && error.status === status && (!code || error.code === code));
   }
+
+
+  await test('generated plans validate, round-trip and preserve their scientific provenance', async () => {
+    assert.equal(documents.length,10);
+    assert.equal(new Set(documents.map(d=>d.key)).size,10);
+    assert.equal(templates.length,17);
+    for(const doc of documents) {
+      validateProgramDocument(doc,knownExercises);
+      assert.ok(sameProgramDocument(parseProgramText(JSON.stringify(doc),knownExercises),doc));
+      const template=templates.find(t=>t.id===doc.key);
+      assert.ok(sameProgramDocument(documentFromProgram(template),doc));
+      assert.equal(template.workouts.length,doc.daysPerWeek);
+      assert.match(doc.notes,/authored|starting/i);
+      if(doc.equipment==='dumbbells') for(const w of template.workouts) for(const rx of w.exercises) assert.ok(['Dumbbells','Dumbbell or kettlebell','Bodyweight'].includes(exercises.find(e=>e.id===rx.exerciseId).equipment));
+    }
+    // Export the legacy programs too, including uppercase superset group labels.
+    for(const template of templates) validateProgramDocument(documentFromProgram(template),knownExercises);
+  });
+
+  await test('strict program input rejects unknown IDs, ambiguous keys, fields, nulls and invalid prescriptions', () => {
+    const mutations=[d=>d.schemaVersion='future-v2',d=>d.version=1.5,d=>d.reviewedAt='2026-02-30',d=>d.extra='no',d=>d.name='Plan\u0000',d=>d.evidence[0].url='javascript:alert(1)',d=>d.evidence[0].url='https://user:secret@example.com',d=>d.nutrition.fatPercent=40,d=>d.workouts[0].exercises[0].exerciseId='unknown',d=>d.workouts[1].key=d.workouts[0].key,d=>d.workouts[0].exercises[1].key=d.workouts[0].exercises[0].key,d=>d.workouts[0].exercises[0].sets=0,d=>d.workouts[0].exercises[0].repsMin=100,d=>d.workouts[0].exercises[0].restSeconds=null,d=>delete d.workouts[0].exercises[0].restSeconds,d=>d.workouts[0].exercises[0].perSide=null,d=>d.workouts[0].exercises[0].superset='',d=>{d.workouts[0].exercises[0].seconds=true;d.workouts[0].exercises[0].amrapLast=true;}];
+    for(const mutate of mutations){const doc=structuredClone(documents[0]);mutate(doc);assert.throws(()=>parseProgramText(JSON.stringify(doc),knownExercises));}
+    assert.throws(()=>parseProgramText('I want a good workout',knownExercises),/JSON/);
+    assert.throws(()=>parseProgramText(' '.repeat(128*1024+1),knownExercises),/128 KiB/);
+    assert.deepEqual(parseProgramText('```json\n'+JSON.stringify(documents[0])+'\n```',knownExercises),documents[0]);
+  });
+
+  await test('personal import is private, idempotent and updates keys without changing history, schedule or targets', async () => {
+    const {client}=setup();const before=await client.getSnapshot();const doc=structuredClone(documents[0]);doc.key='my-import';
+    let state=await client.importProgram(doc);const p=state.programs.find(p=>p.details?.key===doc.key);
+    assert.deepEqual(state.schedule,before.schedule);assert.deepEqual(state.targets,before.targets);
+    const repeated=await client.importProgram(structuredClone(doc));assert.equal(repeated.programs.length,state.programs.length);assert.equal(repeated.activeProgramId,p.id);
+    state=await client.assignWorkout(today,p.workouts[0].id);state=await client.startWorkout(p.workouts[0].id,today);
+    const history=structuredClone(state.sessions),schedule=structuredClone(state.schedule);
+    const changed=structuredClone(doc);changed.name='My updated plan';changed.workouts[0].exercises[0].sets=3;
+    await assert.rejects(client.importProgram(changed),/version/);
+    changed.version=2;state=await client.importProgram(changed);const updated=state.programs.find(v=>v.id===p.id);
+    assert.equal(updated.name,changed.name);assert.equal(updated.workouts[0].id,p.workouts[0].id);assert.equal(updated.workouts[0].exercises[0].id,p.workouts[0].exercises[0].id);
+    assert.deepEqual(state.sessions,history);assert.deepEqual(state.schedule,schedule);
+    const removed=structuredClone(changed);removed.version=3;removed.daysPerWeek=1;removed.workouts.shift();
+    await assert.rejects(client.importProgram(removed),/assigned workouts/);assert.deepEqual(await client.getSnapshot(),state);
+    await client.signIn('other-import@example.test','Other');const other=await client.importProgram(doc);assert.notEqual(other.programs.find(v=>v.details?.key===doc.key).id,p.id);
+    await client.signIn(before.profile.email,before.profile.displayName);assert.deepEqual((await client.getSnapshot()).programs.find(v=>v.id===p.id),updated);
+  });
+
+  await test('shared admin upsert enforces role, revision and version and keeps personal copies frozen', async () => {
+    const {client}=setup();const doc=structuredClone(documents[0]);doc.key='shared-strength';
+    const published=await client.publishProgram(doc,0);assert.equal(published.revision,1);
+    assert.deepEqual(await client.publishProgram(doc,0),published,'a repeated save with the same document is harmless');
+    let state=await client.useTemplate(doc.key);const copy=structuredClone(state.programs.find(p=>p.id===state.activeProgramId));
+    await client.signIn('member-import@example.test','Member');await rejects(client.publishProgram(doc,1),403,'admin_required');assert.ok((await client.listProgramTemplates()).some(t=>t.id===doc.key));
+    await client.signIn(DEFAULT_PREVIEW_EMAIL,'Nathan');const next=structuredClone(doc);next.name='Shared revision two';
+    await rejects(client.publishProgram(next,1),409,'program_version_conflict');next.version=2;
+    await rejects(client.publishProgram(next,0),409,'library_revision_conflict');const update=await client.publishProgram(next,1);assert.equal(update.revision,2);
+    state=await client.getSnapshot();assert.deepEqual(state.programs.find(p=>p.id===copy.id),copy);
+    assert.equal((await createMockClient().listProgramTemplates()).find(t=>t.id===doc.key).name,next.name);
+    state=await client.useTemplate(doc.key);assert.equal(state.programs.find(p=>p.id===state.activeProgramId).name,next.name);
+    assert.notEqual(state.programs.find(p=>p.id===state.activeProgramId).details.key,copy.details.key);
+  });
 
   await test('preview fixture totals, schedule, and completed history agree', async () => {
     const { client } = setup();
@@ -234,7 +296,7 @@ try {
 
   await test('the Go catalogue matches the UI and exercise assets are available with verified provenance', async () => {
     const server = JSON.parse(await readFile(path.join(frontend, '../backend/catalogue/catalogue.json'), 'utf8'));
-    assert.deepEqual(server, JSON.parse(JSON.stringify({ templates, exercises, muscles, readings, foods: [] })), 'run npm run export:catalogue after catalogue edits');
+    assert.deepEqual(server, JSON.parse(JSON.stringify({ templates:templates.filter(t=>!t.details), programDocuments:documents, exercises, muscles, readings, foods: [], expertRules: JSON.parse(await readFile(path.join(frontend, "src/lib/expert-rules.json"), "utf8")), goalRules: JSON.parse(await readFile(path.join(frontend, "src/lib/goal-rules.json"), "utf8")) })), 'run npm run export:catalogue after catalogue edits');
     const provenance = JSON.parse(await readFile(path.join(frontend, 'static/images/exercise-provenance.json'), 'utf8'));
     for (const exercise of exercises) {
       const bytes = await readFile(path.join(frontend, 'static', exercise.image.slice(1)));

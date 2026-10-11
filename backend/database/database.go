@@ -41,7 +41,7 @@ func Migrate(db *gorm.DB, dbSchema string) error {
 	if err := db.Exec(fmt.Sprintf(`CREATE SCHEMA IF NOT EXISTS "%s"`, dbSchema)).Error; err != nil {
 		return err
 	}
-	if err := db.AutoMigrate(&dao.User{}, &dao.TrainingDocument{}, &dao.MutationReceipt{}); err != nil {
+	if err := db.AutoMigrate(&dao.User{}, &dao.TrainingDocument{}, &dao.MutationReceipt{}, &dao.ProgramTemplate{}); err != nil {
 		return err
 	}
 	return providers.Migrate(db)

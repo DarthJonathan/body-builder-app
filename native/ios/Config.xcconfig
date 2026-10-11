@@ -1,0 +1,6 @@
+// Set this to the deployed frontend origin. The frontend proxies /api/v1 to Go.
+// $() prevents Xcode from treating the URL's double slash as a comment.
+BODYBUILDER_SERVER_HOST = bodybuilder.lucasgrey.dev
+BODYBUILDER_SERVER_URL = https:/$()/$(BODYBUILDER_SERVER_HOST)
+PRODUCT_BUNDLE_IDENTIFIER = com.bodybuilder.personal
+// Set DEVELOPMENT_TEAM in Xcode to a team with HealthKit provisioning.

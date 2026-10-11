@@ -62,10 +62,13 @@ test('save notifications let taps reach a check-in card underneath them', async 
   // Position the real card beneath the floating notification, then send a
   // native pointer click in their overlap. Locator click's actionability
   // retries would otherwise wait for a blocking notification to disappear.
-  await app.evaluate(() => {
+  await app.evaluate(async () => {
     const card = document.querySelector('.checkin-card')!.getBoundingClientRect();
     const toast = document.querySelector('.toast')!.getBoundingClientRect();
     window.scrollTo({ top: scrollY + card.y + card.height / 2 - toast.y - toast.height / 2, behavior: 'instant' });
+    // WebKit updates layout before its scrolling layer is ready for native
+    // hit testing. Wait for painted frames before reading click coordinates.
+    await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
   });
   const cardBox = (await card.boundingBox())!;
   const toastBox = (await notification.boundingBox())!;

@@ -67,6 +67,11 @@ func ValidateTargetCalculation(input TargetCalculation) error {
 			return err
 		}
 	}
+	if input.HealthEnergy != nil {
+		if err := ValidateHealthEnergy(*input.HealthEnergy); err != nil {
+			return err
+		}
+	}
 	return Date(input.EffectiveDate)
 }
 
@@ -83,6 +88,11 @@ func CalculateNutrition(input TargetCalculation) (NutritionTargets, error) {
 	}
 	resting := 10*input.WeightKG + 6.25*input.HeightCM - 5*float64(input.Age) + constant
 	maintenance := resting * activityFactors[input.Activity]
+	version := NutritionCalculationVersion
+	if input.HealthEnergy != nil {
+		resting, maintenance = HealthEnergyMean(*input.HealthEnergy)
+		version = "apple-health-energy-v1"
+	}
 	calories := math.Round((maintenance+input.CalorieAdjustment)/10) * 10
 	if err := Number(calories, "estimated calorie target", 1000, 10000); err != nil {
 		return NutritionTargets{}, errors.New("the estimate is outside the calculator's 1000–10000 calorie range; check your inputs or enter manual targets")
@@ -97,7 +107,7 @@ func CalculateNutrition(input TargetCalculation) (NutritionTargets, error) {
 		ID: "nutrition-preview", EffectiveDate: input.EffectiveDate,
 		Nutrients: Nutrients{Calories: calories, Protein: protein, Carbs: math.Round(remaining / 4), Fat: fat},
 		Mode:      "calculated", ManuallyOverridden: false,
-		Calculation: &NutritionCalculation{Version: NutritionCalculationVersion, Input: input, RestingCalories: math.Round(resting), MaintenanceCalories: math.Round(maintenance)},
+		Calculation: &NutritionCalculation{Version: version, Input: input, RestingCalories: math.Round(resting), MaintenanceCalories: math.Round(maintenance)},
 	}, nil
 }
 
@@ -109,12 +119,15 @@ func ValidateCalculationProvenance(target NutritionTargets) error {
 		return nil
 	}
 	provenance := target.Calculation
-	if provenance.Version != NutritionCalculationVersion {
+	if provenance.Version != NutritionCalculationVersion && provenance.Version != "apple-health-energy-v1" {
 		return errors.New("unsupported nutrition calculation version")
 	}
 	expected, err := CalculateNutrition(provenance.Input)
 	if err != nil {
 		return err
+	}
+	if provenance.Version != expected.Calculation.Version {
+		return errors.New("calculation version does not match its energy source")
 	}
 	if provenance.RestingCalories != expected.Calculation.RestingCalories || provenance.MaintenanceCalories != expected.Calculation.MaintenanceCalories {
 		return errors.New("calculation provenance does not match its inputs")

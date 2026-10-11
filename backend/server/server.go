@@ -100,6 +100,40 @@ func NewRouter(db *gorm.DB, cfg config.Config) http.Handler {
 	}).Methods("GET")
 	protected.HandleFunc("/snapshot", controller.Snapshot).Methods("GET")
 	protected.HandleFunc("/mutations", controller.Mutate).Methods("POST")
+	protected.HandleFunc("/goals/preview", func(w http.ResponseWriter, r *http.Request) {
+		var input domain.GoalAnswers
+		if err := controllers.DecodeJSON(w, r, &input); err != nil {
+			controllers.WriteError(w, 400, err.Error())
+			return
+		}
+		result, err := training.PreviewGoalPlan(r.Context(), middleware.UserID(r.Context()), input)
+		if err != nil {
+			controllers.TrainingFailure(w, err)
+			return
+		}
+		controllers.WriteJSON(w, 200, response.Response{Success: true, Data: result})
+	}).Methods("POST")
+	protected.HandleFunc("/programs/recommendations", func(w http.ResponseWriter, r *http.Request) {
+		var input domain.TrainingPreferences
+		if err := controllers.DecodeJSON(w, r, &input); err != nil {
+			controllers.WriteError(w, 400, err.Error())
+			return
+		}
+		result, err := training.RecommendPrograms(r.Context(), middleware.UserID(r.Context()), input)
+		if err != nil {
+			controllers.TrainingFailure(w, err)
+			return
+		}
+		controllers.WriteJSON(w, 200, response.Response{Success: true, Data: result})
+	}).Methods("POST")
+	protected.HandleFunc("/progress/review", func(w http.ResponseWriter, r *http.Request) {
+		result, err := training.ReviewProgress(r.Context(), middleware.UserID(r.Context()))
+		if err != nil {
+			controllers.TrainingFailure(w, err)
+			return
+		}
+		controllers.WriteJSON(w, 200, response.Response{Success: true, Data: result})
+	}).Methods("GET")
 	protected.HandleFunc("/nutrition/calculate", func(w http.ResponseWriter, r *http.Request) {
 		var input domain.TargetCalculation
 		if err := controllers.DecodeJSON(w, r, &input); err != nil {
@@ -120,7 +154,22 @@ func NewRouter(db *gorm.DB, cfg config.Config) http.Handler {
 		controllers.WriteJSON(w, 200, response.Response{Success: true, Data: result})
 	}).Methods("POST")
 	protected.HandleFunc("/catalogue", func(w http.ResponseWriter, r *http.Request) {
-		controllers.WriteJSON(w, 200, response.Response{Success: true, Data: training.Catalogue})
+		library, err := training.ProgramTemplates(r.Context())
+		if err != nil {
+			controllers.TrainingFailure(w, err)
+			return
+		}
+		data := training.Catalogue
+		data.Templates = library
+		controllers.WriteJSON(w, 200, response.Response{Success: true, Data: data})
+	}).Methods("GET")
+	protected.HandleFunc("/programs/templates", func(w http.ResponseWriter, r *http.Request) {
+		library, err := training.ProgramTemplates(r.Context())
+		if err != nil {
+			controllers.TrainingFailure(w, err)
+			return
+		}
+		controllers.WriteJSON(w, 200, response.Response{Success: true, Data: library})
 	}).Methods("GET")
 	protected.HandleFunc("/foods/search", func(w http.ResponseWriter, r *http.Request) {
 		query := strings.TrimSpace(r.URL.Query().Get("q"))
@@ -176,6 +225,23 @@ func NewRouter(db *gorm.DB, cfg config.Config) http.Handler {
 		var user dao.User
 		return db.WithContext(r.Context()).Where("id = ? AND role = ?", middleware.UserID(r.Context()), "admin").First(&user).Error == nil
 	}
+	protected.HandleFunc("/admin/programs", func(w http.ResponseWriter, r *http.Request) {
+		if !admin(r) {
+			controllers.WriteError(w, 403, "only an administrator can publish shared programs")
+			return
+		}
+		var input service.PublishProgram
+		if err := controllers.DecodeJSON(w, r, &input); err != nil {
+			controllers.WriteError(w, 400, err.Error())
+			return
+		}
+		result, err := training.PublishProgram(r.Context(), middleware.UserID(r.Context()), input)
+		if err != nil {
+			controllers.TrainingFailure(w, err)
+			return
+		}
+		controllers.WriteJSON(w, 200, response.Response{Success: true, Data: result})
+	}).Methods("PUT")
 	protected.HandleFunc("/admin/provider", func(w http.ResponseWriter, r *http.Request) {
 		if !admin(r) {
 			controllers.WriteError(w, 403, "only an administrator can configure providers")

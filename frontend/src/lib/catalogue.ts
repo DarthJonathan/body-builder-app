@@ -1,4 +1,7 @@
 import sourceGuides from './exercise-guides.json';
+import programDocuments from './program-library.json';
+import { templateFromDocument } from './program-documents';
+import type { ProgramDocument } from './domain';
 import type { Exercise, Muscle, ProgramTemplate, Reading, Food, Workout, Prescription } from './domain';
 
 export const muscles: Muscle[] = [
@@ -218,6 +221,8 @@ export const templates: ProgramTemplate[] = [
     ]
   }
 ];
+
+templates.unshift(...(programDocuments as ProgramDocument[]).map(doc=>templateFromDocument(doc,exercises,muscles)));
 
 export const readings: Reading[] = [
   { id: 'strength-basics', title: 'Build your strength foundation', url: 'https://www.acefitness.org/resources/everyone/blog/8650/resistance-training-workouts-for-beginners/', description: 'Understand the basics of resistance training and explore beginner gym and home workouts.', category: 'Training', source: 'American Council on Exercise', minutes: 8 },

@@ -1,5 +1,6 @@
 import { test as liveTest, expect, registerAccount, backendSnapshot, openCheckIn, saveCheckIn, pendingOperations, today, createAndScheduleTemplate } from './helpers';
 import { createOfflineProxy, type OfflineProxy } from '../offline-proxy';
+import { reachGoalPreferences, nextGoalQuestion, reachGoalEnergy, reachGoalTargets, finishGoal } from '../goal-helpers';
 
 const test = liveTest.extend<{ offlineProxy: OfflineProxy }>({
   offlineProxy: async ({ baseURL }, use) => {
@@ -7,6 +8,48 @@ const test = liveTest.extend<{ offlineProxy: OfflineProxy }>({
     try { await use(proxy); }
     finally { await proxy.close(); }
   }
+});
+
+test('plan selection requires a connection and a reviewed offline goal syncs as one durable operation', async ({page:app,offlineProxy,baseURL},testInfo)=>{
+  const errors:string[]=[];app.on('pageerror',error=>errors.push(error.message));
+  await app.goto(offlineProxy.origin);
+  const account=await registerAccount(app,testInfo,'offline-goal');
+  await app.evaluate(async()=>{await navigator.serviceWorker.ready;});await app.reload();
+  await expect.poll(()=>app.evaluate(()=>Boolean(navigator.serviceWorker.controller))).toBe(true);
+  const initial=await backendSnapshot(app,account.token);
+  offlineProxy.setAvailable(false);
+  await reachGoalPreferences(app);
+  await nextGoalQuestion(app);
+  const wizard=app.getByRole('main',{name:'Create a goal plan'});
+  await expect(wizard.getByRole('alert')).toContainText('Cannot connect right now');
+  await expect(wizard.getByRole('heading',{name:'Recommended Programs'})).not.toBeVisible();
+  expect(await pendingOperations(app,account.userId)).toEqual([]);
+  offlineProxy.setAvailable(true);
+  await nextGoalQuestion(app);
+  await expect(wizard.getByRole('heading',{name:'Recommended Programs'})).toBeVisible();
+  await nextGoalQuestion(app);
+  await expect(wizard.getByRole('heading',{name:'Ready?',exact:true})).toBeVisible();
+  await reachGoalEnergy(app);await reachGoalTargets(app);
+  offlineProxy.setAvailable(false);
+  expect(await app.evaluate(async()=>{
+    try {await fetch(`/__offline_probe__?id=${crypto.randomUUID()}`,{cache:'no-store'});return false;}
+    catch {return true;}
+  }), 'Verify the reviewed goal is saved without origin transport').toBe(true);
+  await finishGoal(app);
+  await expect.poll(async()=>(await pendingOperations(app,account.userId)).length).toBe(1);
+  const queued=await pendingOperations(app,account.userId);
+  expect(queued[0].operation).toBe('createGoalPlan');expect(queued[0].baseRevision).toBe(initial.revision);
+  expect(queued[0].payload).toEqual(expect.objectContaining({version:'goal-library-v2',answers:expect.objectContaining({programSelection:expect.objectContaining({id:'bb-foundation-3'})})}));
+  const waiting=await backendSnapshot(app,account.token,baseURL!);
+  expect(waiting.revision).toBe(initial.revision);expect(waiting.programs).toEqual([]);expect(waiting.targets).toEqual([]);expect(waiting.goalPlans).toBeUndefined();
+  await app.reload();await expect(app.getByRole('button',{name:'Dashboard',exact:true})).toBeVisible();
+  expect(await pendingOperations(app,account.userId)).toEqual(queued);
+  const acknowledged=app.waitForResponse(r=>new URL(r.url()).pathname==='/api/v1/mutations' && r.request().postDataJSON()?.id===queued[0].id && r.status()===200);
+  offlineProxy.setAvailable(true);await app.evaluate(()=>window.dispatchEvent(new Event('online')));await acknowledged;
+  await expect.poll(async()=>(await pendingOperations(app,account.userId)).length).toBe(0);
+  const saved=await backendSnapshot(app,account.token);
+  expect(saved.revision).toBe(initial.revision+1);expect(saved.goalPlans).toHaveLength(1);expect(saved.programs).toHaveLength(1);expect(saved.targets).toHaveLength(1);expect(saved.schedule).toHaveLength(28);
+  expect(errors).toEqual([]);
 });
 
 test('production offline edits retain retry identity through reload and replay once into PostgreSQL', async ({ page: app, offlineProxy, baseURL }, testInfo) => {

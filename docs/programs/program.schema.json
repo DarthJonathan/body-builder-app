@@ -1,0 +1,384 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BodyBuilder Program Document v1",
+  "$comment": "Runtime validators additionally check byte limit, nonblank/control-free text, real dates, HTTPS URLs without credentials, workout count equals daysPerWeek, unique workout/exercise keys, and ordered rep ranges.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "key",
+    "version",
+    "name",
+    "description",
+    "experience",
+    "goals",
+    "equipment",
+    "daysPerWeek",
+    "sessionMinutes",
+    "focus",
+    "purpose",
+    "reviewedAt",
+    "notes",
+    "progression",
+    "nutrition",
+    "evidence",
+    "workouts"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "bodybuilder.program.v1"
+    },
+    "key": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{1,79}$"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1000000
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 150
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "experience": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 3,
+      "items": {
+        "enum": [
+          "beginner",
+          "intermediate",
+          "advanced"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "goals": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 3,
+      "items": {
+        "enum": [
+          "build-muscle",
+          "maintain",
+          "lose-fat"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "equipment": {
+      "enum": [
+        "full-gym",
+        "dumbbells"
+      ]
+    },
+    "daysPerWeek": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 7
+    },
+    "sessionMinutes": {
+      "type": "integer",
+      "minimum": 15,
+      "maximum": 180
+    },
+    "focus": {
+      "enum": [
+        "balanced",
+        "glutes"
+      ]
+    },
+    "purpose": {
+      "enum": [
+        "hypertrophy",
+        "strength",
+        "general"
+      ]
+    },
+    "reviewedAt": {
+      "type": "string",
+      "format": "date",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "notes": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "progression": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "method",
+        "instructions",
+        "stall"
+      ],
+      "properties": {
+        "method": {
+          "enum": [
+            "double-progression",
+            "linear-progression",
+            "manual"
+          ]
+        },
+        "instructions": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 3000
+        },
+        "stall": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 3000
+        }
+      }
+    },
+    "nutrition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "proteinPerKg",
+        "fatPercent",
+        "instructions"
+      ],
+      "properties": {
+        "proteinPerKg": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 2.5
+        },
+        "fatPercent": {
+          "type": "number",
+          "minimum": 20,
+          "maximum": 35
+        },
+        "instructions": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 3000
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "title",
+          "url"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000,
+            "format": "uri",
+            "pattern": "^https://"
+          }
+        }
+      }
+    },
+    "workouts": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 7,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "key",
+          "name",
+          "warmup",
+          "exercises"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{1,79}$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 150
+          },
+          "warmup": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 10,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            }
+          },
+          "exercises": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 20,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "key",
+                "exerciseId",
+                "sets",
+                "repsMin",
+                "repsMax",
+                "restSeconds"
+              ],
+              "properties": {
+                "key": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9-]{1,79}$"
+                },
+                "exerciseId": {
+                  "enum": [
+                    "deadlift",
+                    "hip-thrust",
+                    "reverse-lunge",
+                    "kickback",
+                    "band-abduction",
+                    "machine-sit-up",
+                    "plank",
+                    "pushup",
+                    "lat-pulldown",
+                    "shoulder-press",
+                    "supported-row",
+                    "lateral-raise",
+                    "preacher-curl",
+                    "squat",
+                    "calf-raise",
+                    "machine-abduction",
+                    "walking-lunge",
+                    "dead-bug",
+                    "flat-dumbbell-press",
+                    "cable-row",
+                    "rear-delt-fly",
+                    "tricep-extension",
+                    "romanian-deadlift",
+                    "hip-thrust-machine",
+                    "split-squat",
+                    "leg-curl",
+                    "leg-extension",
+                    "bench-press",
+                    "barbell-row",
+                    "overhead-press",
+                    "chinup",
+                    "pec-deck",
+                    "triceps-pushdown",
+                    "cable-curl",
+                    "incline-press",
+                    "rack-pull",
+                    "military-press",
+                    "machine-chest-press",
+                    "machine-shoulder-press",
+                    "dumbbell-curl",
+                    "triceps-dip",
+                    "cable-crunch",
+                    "cable-pull-through",
+                    "standing-calf-raise",
+                    "seated-calf-raise",
+                    "dumbbell-rdl",
+                    "leg-press",
+                    "hack-squat",
+                    "hyperextension",
+                    "weighted-sit-up",
+                    "reverse-crunch",
+                    "hanging-leg-raise",
+                    "dumbbell-squat",
+                    "dumbbell-row",
+                    "dumbbell-lateral-raise",
+                    "dumbbell-lunge",
+                    "standing-dumbbell-press",
+                    "dumbbell-fly",
+                    "hammer-curl",
+                    "seated-dumbbell-extension",
+                    "dumbbell-step-up",
+                    "one-arm-dumbbell-row",
+                    "dumbbell-rear-delt-fly",
+                    "close-grip-dumbbell-press",
+                    "good-morning",
+                    "bodyweight-kickback",
+                    "goblet-squat",
+                    "crunch",
+                    "glute-bridge",
+                    "lying-leg-raise",
+                    "face-pull",
+                    "barbell-curl",
+                    "skullcrusher",
+                    "incline-barbell-press",
+                    "incline-dumbbell-curl",
+                    "front-squat",
+                    "barbell-lunge"
+                  ]
+                },
+                "sets": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 10
+                },
+                "repsMin": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 600
+                },
+                "repsMax": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 600
+                },
+                "restSeconds": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 600
+                },
+                "perSide": {
+                  "type": "boolean"
+                },
+                "seconds": {
+                  "type": "boolean"
+                },
+                "amrapLast": {
+                  "type": "boolean"
+                },
+                "superset": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9-]{1,79}$"
+                }
+              },
+              "not": {
+                "properties": {
+                  "seconds": {
+                    "const": true
+                  },
+                  "amrapLast": {
+                    "const": true
+                  }
+                },
+                "required": [
+                  "seconds",
+                  "amrapLast"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

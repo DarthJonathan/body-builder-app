@@ -18,6 +18,7 @@ def stop(*_):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--reports-dir', type=Path, default=REPO / 'frontend' / 'ci-artifacts' / 'live')
+    parser.add_argument('--tests', nargs='+', help='Run only these live specs in both development and production')
     args = parser.parse_args()
     reports = args.reports_dir.resolve()
     reports.mkdir(parents=True, exist_ok=True)
@@ -44,8 +45,11 @@ def main():
             suites = [
                 ('development', ['npm', 'run', 'test:live', '--']),
                 ('production', ['npm', 'run', 'test:live:production', '--',
-                                'tests/live/nutrition.spec.ts', 'tests/live/offline.spec.ts']),
+                                'tests/live/nutrition.spec.ts', 'tests/live/offline.spec.ts', 'tests/live/goals.spec.ts', 'tests/live/programs.spec.ts']),
             ]
+            if args.tests:
+                suites = [('development', ['npm', 'run', 'test:live', '--', *args.tests]),
+                          ('production', ['npm', 'run', 'test:live:production', '--', *args.tests])]
             for name, command in suites:
                 suite_dir = reports / name
                 environment['PLAYWRIGHT_HTML_OUTPUT_DIR'] = str(suite_dir / 'report')

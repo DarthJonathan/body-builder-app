@@ -1,0 +1,103 @@
+import { test,expect,navigate,snapshot,assertNoHorizontalOverflow,TODAY } from './helpers';
+import { openGoal,reachGoalSchedule,reachGoalEnergy,reachGoalTargets,nextGoalQuestion,finishGoal } from './goal-helpers';
+import type { HealthEnergy } from '../src/lib/domain';
+
+const energy:HealthEnergy={source:'apple-health',syncedAt:'2026-10-09T04:00:00Z',timezone:'Asia/Singapore',sources:['Synthetic Watch'],days:Array.from({length:7},(_,i)=>({date:`2026-10-${String(i+2).padStart(2,'0')}`,restingCalories:1600,activeCalories:400,coverageHours:24,dayHours:24}))};
+
+test('goal setup is a reversible draft and requires complete body inputs',async({app},testInfo)=>{
+  const before=await snapshot(app);
+  await openGoal(app);
+  await assertNoHorizontalOverflow(app);
+  await testInfo.attach('goal-question',{body:await app.screenshot(),contentType:'image/png'});
+  await app.getByRole('button',{name:'Cancel goal setup',exact:true}).click();
+  expect(await snapshot(app)).toEqual(before);
+  await reachGoalSchedule(app);
+  await nextGoalQuestion(app);await nextGoalQuestion(app);
+  const wizard=app.getByRole('main',{name:'Create a goal plan'});
+  await wizard.getByLabel('Age',{exact:true}).fill('');
+  await nextGoalQuestion(app);
+  await expect(wizard.getByRole('heading',{name:'Your starting body stats.'})).toBeVisible();
+  expect(await wizard.getByLabel('Age',{exact:true}).evaluate(e=>(e as HTMLInputElement).validity.valueMissing)).toBe(true);
+  await app.goBack();
+  await expect(wizard).not.toBeVisible();
+  expect(await snapshot(app)).toEqual(before);
+});
+
+test('dragging weekdays, manual targets and goal research persist without losing history',async({app},testInfo)=>{
+  const before=await snapshot(app);
+  await reachGoalSchedule(app);
+  const wizard=app.getByRole('main',{name:'Create a goal plan'});
+  const from=wizard.getByRole('button',{name:'Move MON schedule',exact:true});
+  const to=wizard.getByRole('button',{name:'Move TUE schedule',exact:true});
+  await from.scrollIntoViewIfNeeded();const start=await from.boundingBox(),end=await to.boundingBox();
+  expect(start).not.toBeNull();expect(end).not.toBeNull();
+  await app.mouse.move(start!.x+start!.width/2,start!.y+start!.height/2);
+  await app.mouse.down();
+  await app.mouse.move(end!.x+end!.width/2,end!.y+end!.height/2,{steps:6});
+  await app.mouse.up();
+  await expect(wizard.getByLabel('Day for workout 1',{exact:true})).toHaveValue('1');
+  await wizard.getByLabel('Day for workout 3',{exact:true}).selectOption('6');
+  await expect(wizard.getByLabel('Day for workout 3',{exact:true})).toHaveValue('6');
+  await assertNoHorizontalOverflow(app);
+  await testInfo.attach('goal-schedule',{body:await app.screenshot({fullPage:true}),contentType:'image/png'});
+  await reachGoalEnergy(app);
+  await expect(wizard).toContainText('Direct sync is available in the BodyBuilder iPhone app');
+  await reachGoalTargets(app);
+  await wizard.getByRole('button',{name:'Override targets manually',exact:true}).click();
+  for(const [label,value] of [['Daily Calories','2400'],['Daily Protein','130'],['Daily Carbs','280'],['Daily Fat','65']]) await wizard.getByLabel(label,{exact:true}).fill(value);
+  await nextGoalQuestion(app);
+  await wizard.getByRole('radio',{name:'Replace unstarted dates with this plan',exact:true}).check();
+  await wizard.getByText('Why this plan? Research & calculation',{exact:true}).click();
+  await expect(wizard).toContainText('no split is universally best');
+  await expect(wizard.getByRole('link',{name:/ACSM/}).first()).toHaveAttribute('href',/^https:\/\//);
+  await assertNoHorizontalOverflow(app);
+  await wizard.getByRole('button',{name:'Create Goal Plan',exact:true}).click();
+  await expect(wizard).not.toBeVisible();
+  const saved=await snapshot(app),plan=saved.goalPlans!.at(-1)!;
+  expect(plan.answers.workoutDays).toEqual([1,2,6]);expect(plan.programId).toBe(saved.activeProgramId);
+  expect(plan.targets).toEqual(expect.objectContaining({effectiveDate:TODAY,mode:'manual',calories:2400,protein:130,carbs:280,fat:65,manuallyOverridden:true}));
+  expect(saved.foodEntries).toEqual(before.foodEntries);expect(saved.sessions).toEqual(before.sessions);
+  expect(saved.programs.slice(0,-1)).toEqual(before.programs);
+  await app.reload();await navigate(app,'progress');
+  await app.getByRole('button',{name:'View Goal Plan & Research',exact:true}).click();
+  await expect(app.getByRole('dialog')).toContainText('3-Day Full Body');
+  await app.getByRole('button',{name:'Close dialog',exact:true}).click();await navigate(app,'nutrition');
+  await app.getByRole('button',{name:'Nutrition settings',exact:true}).click();
+  await expect(app.getByRole('dialog').getByLabel('Calories',{exact:true})).toHaveValue('2400');
+});
+
+test('native energy requires consent and replaces the activity multiplier; removal preserves dated estimates',async({app})=>{
+  await app.evaluate(h=>{window.BodyBuilderHealth={readEnergy:async()=>({energy:h})};},energy);
+  const before=await snapshot(app);
+  await reachGoalSchedule(app);await reachGoalEnergy(app);
+  const wizard=app.getByRole('main',{name:'Create a goal plan'}),connect=wizard.getByRole('button',{name:'Connect Apple Health',exact:true});
+  await expect(connect).toBeDisabled();
+  const consent=wizard.getByRole('checkbox',{name:/I agree to use these energy summaries/});
+  await consent.check();await connect.click();
+  await expect(wizard.getByRole('status')).toContainText('7 complete days read');
+  await expect(wizard).toContainText('2000');
+  expect(await snapshot(app)).toEqual(before);
+  await consent.uncheck();await expect(wizard.getByRole('checkbox',{name:'Use Apple Health energy for this plan',exact:true})).not.toBeChecked();
+  await consent.check();await wizard.getByRole('checkbox',{name:'Use Apple Health energy for this plan',exact:true}).check();
+  await reachGoalTargets(app);await expect(wizard).toContainText('2150');
+  await finishGoal(app);
+  const saved=await snapshot(app),target=saved.targets.find(t=>t.effectiveDate===TODAY)!;
+  expect(target.calculation?.version).toBe('apple-health-energy-v1');expect(target.calculation?.maintenanceCalories).toBe(2000);
+  expect(saved.healthEnergy).toEqual(energy);
+  await app.getByRole('button',{name:'Account information',exact:true}).click();
+  await app.getByRole('button',{name:'Apple Health',exact:true}).click();
+  await app.getByRole('button',{name:'Remove saved energy summary',exact:true}).click();
+  await expect(app.getByRole('dialog')).not.toBeVisible();
+  const removed=await snapshot(app);expect(removed.healthEnergy).toBeUndefined();expect(removed.targets).toEqual(saved.targets);expect(removed.goalPlans).toEqual(saved.goalPlans);
+});
+
+test('unavailable or insufficient native Health data leaves the equation estimate usable',async({app})=>{
+  await app.evaluate(()=>{window.BodyBuilderHealth={readEnergy:async()=>({message:'Fewer than seven complete energy days are available.'})};});
+  await reachGoalSchedule(app);await reachGoalEnergy(app);
+  const wizard=app.getByRole('main',{name:'Create a goal plan'});
+  await wizard.getByRole('checkbox',{name:/I agree to use these energy summaries/}).check();
+  await wizard.getByRole('button',{name:'Connect Apple Health',exact:true}).click();
+  await expect(wizard.getByRole('status')).toContainText('Fewer than seven');
+  await reachGoalTargets(app);await expect(wizard).toContainText('2710');await finishGoal(app);
+  const saved=await snapshot(app);expect(saved.targets.find(t=>t.effectiveDate===TODAY)?.calculation?.version).toBe('mifflin-st-jeor-v1');expect(saved.healthEnergy).toBeUndefined();
+});

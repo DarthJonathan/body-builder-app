@@ -1,0 +1,1349 @@
+{
+  "version": "progress-review-v1",
+  "cases": [
+    {
+      "name": "successful repeats",
+      "asOf": "2026-10-10",
+      "snapshot": {
+        "revision": 0,
+        "profile": {
+          "id": "test",
+          "displayName": "Test",
+          "email": "test@example.test",
+          "timezone": "UTC",
+          "unit": "kg",
+          "goal": "build-muscle",
+          "startWeight": 70,
+          "goalStartedAt": "2026-10-01",
+          "role": "user"
+        },
+        "programs": [
+          {
+            "id": "progress-program",
+            "name": "Recorded test plan",
+            "level": "Intermediate",
+            "goal": "build-muscle",
+            "workouts": [
+              {
+                "id": "progress-workout",
+                "name": "Lower body",
+                "warmup": [],
+                "muscles": [],
+                "exercises": [
+                  {
+                    "id": "rx-squat",
+                    "exerciseId": "squat",
+                    "sets": 3,
+                    "repsMin": 6,
+                    "repsMax": 10,
+                    "restSeconds": 120
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "activeProgramId": "progress-program",
+        "schedule": [],
+        "sessions": [
+          {
+            "id": "session-0",
+            "workoutId": "progress-workout",
+            "name": "Lower body",
+            "date": "2026-10-08",
+            "startedAt": "2026-10-08T09:00:00Z",
+            "finishedAt": "2026-10-08T10:00:00Z",
+            "exercises": [
+              {
+                "id": "entry-0",
+                "exerciseId": "squat",
+                "prescription": {
+                  "id": "rx-squat",
+                  "exerciseId": "squat",
+                  "sets": 3,
+                  "repsMin": 6,
+                  "repsMax": 10,
+                  "restSeconds": 120
+                },
+                "notes": "",
+                "sets": [
+                  {
+                    "id": "set-0-0",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-0-1",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-0-2",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  }
+                ]
+              }
+            ],
+            "restDeadline": null,
+            "restDuration": 90
+          },
+          {
+            "id": "session-1",
+            "workoutId": "progress-workout",
+            "name": "Lower body",
+            "date": "2026-10-05",
+            "startedAt": "2026-10-05T09:00:00Z",
+            "finishedAt": "2026-10-05T10:00:00Z",
+            "exercises": [
+              {
+                "id": "entry-1",
+                "exerciseId": "squat",
+                "prescription": {
+                  "id": "rx-squat",
+                  "exerciseId": "squat",
+                  "sets": 3,
+                  "repsMin": 6,
+                  "repsMax": 10,
+                  "restSeconds": 120
+                },
+                "notes": "",
+                "sets": [
+                  {
+                    "id": "set-1-0",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-1-1",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-1-2",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  }
+                ]
+              }
+            ],
+            "restDeadline": null,
+            "restDuration": 90
+          }
+        ],
+        "foodEntries": [],
+        "targets": [],
+        "checkIns": [],
+        "weights": [],
+        "lessons": [],
+        "provider": {
+          "provider": "openai",
+          "model": "",
+          "enabled": false,
+          "configured": false
+        }
+      },
+      "kind": "increase-load"
+    },
+    {
+      "name": "difficult repeats",
+      "asOf": "2026-10-10",
+      "snapshot": {
+        "revision": 0,
+        "profile": {
+          "id": "test",
+          "displayName": "Test",
+          "email": "test@example.test",
+          "timezone": "UTC",
+          "unit": "kg",
+          "goal": "build-muscle",
+          "startWeight": 70,
+          "goalStartedAt": "2026-10-01",
+          "role": "user"
+        },
+        "programs": [
+          {
+            "id": "progress-program",
+            "name": "Recorded test plan",
+            "level": "Intermediate",
+            "goal": "build-muscle",
+            "workouts": [
+              {
+                "id": "progress-workout",
+                "name": "Lower body",
+                "warmup": [],
+                "muscles": [],
+                "exercises": [
+                  {
+                    "id": "rx-squat",
+                    "exerciseId": "squat",
+                    "sets": 3,
+                    "repsMin": 6,
+                    "repsMax": 10,
+                    "restSeconds": 120
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "activeProgramId": "progress-program",
+        "schedule": [],
+        "sessions": [
+          {
+            "id": "session-0",
+            "workoutId": "progress-workout",
+            "name": "Lower body",
+            "date": "2026-10-08",
+            "startedAt": "2026-10-08T09:00:00Z",
+            "finishedAt": "2026-10-08T10:00:00Z",
+            "exercises": [
+              {
+                "id": "entry-0",
+                "exerciseId": "squat",
+                "prescription": {
+                  "id": "rx-squat",
+                  "exerciseId": "squat",
+                  "sets": 3,
+                  "repsMin": 6,
+                  "repsMax": 10,
+                  "restSeconds": 120
+                },
+                "notes": "",
+                "sets": [
+                  {
+                    "id": "set-0-0",
+                    "weight": 50,
+                    "reps": 5,
+                    "effort": "hard",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-0-1",
+                    "weight": 50,
+                    "reps": 5,
+                    "effort": "hard",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-0-2",
+                    "weight": 50,
+                    "reps": 5,
+                    "effort": "hard",
+                    "completed": true
+                  }
+                ]
+              }
+            ],
+            "restDeadline": null,
+            "restDuration": 90
+          },
+          {
+            "id": "session-1",
+            "workoutId": "progress-workout",
+            "name": "Lower body",
+            "date": "2026-10-05",
+            "startedAt": "2026-10-05T09:00:00Z",
+            "finishedAt": "2026-10-05T10:00:00Z",
+            "exercises": [
+              {
+                "id": "entry-1",
+                "exerciseId": "squat",
+                "prescription": {
+                  "id": "rx-squat",
+                  "exerciseId": "squat",
+                  "sets": 3,
+                  "repsMin": 6,
+                  "repsMax": 10,
+                  "restSeconds": 120
+                },
+                "notes": "",
+                "sets": [
+                  {
+                    "id": "set-1-0",
+                    "weight": 50,
+                    "reps": 5,
+                    "effort": "hard",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-1-1",
+                    "weight": 50,
+                    "reps": 5,
+                    "effort": "hard",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-1-2",
+                    "weight": 50,
+                    "reps": 5,
+                    "effort": "hard",
+                    "completed": true
+                  }
+                ]
+              }
+            ],
+            "restDeadline": null,
+            "restDuration": 90
+          },
+          {
+            "id": "session-2",
+            "workoutId": "progress-workout",
+            "name": "Lower body",
+            "date": "2026-10-02",
+            "startedAt": "2026-10-02T09:00:00Z",
+            "finishedAt": "2026-10-02T10:00:00Z",
+            "exercises": [
+              {
+                "id": "entry-2",
+                "exerciseId": "squat",
+                "prescription": {
+                  "id": "rx-squat",
+                  "exerciseId": "squat",
+                  "sets": 3,
+                  "repsMin": 6,
+                  "repsMax": 10,
+                  "restSeconds": 120
+                },
+                "notes": "",
+                "sets": [
+                  {
+                    "id": "set-2-0",
+                    "weight": 50,
+                    "reps": 5,
+                    "effort": "hard",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-2-1",
+                    "weight": 50,
+                    "reps": 5,
+                    "effort": "hard",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-2-2",
+                    "weight": 50,
+                    "reps": 5,
+                    "effort": "hard",
+                    "completed": true
+                  }
+                ]
+              }
+            ],
+            "restDeadline": null,
+            "restDuration": 90
+          }
+        ],
+        "foodEntries": [],
+        "targets": [],
+        "checkIns": [],
+        "weights": [],
+        "lessons": [],
+        "provider": {
+          "provider": "openai",
+          "model": "",
+          "enabled": false,
+          "configured": false
+        }
+      },
+      "kind": "review-stall"
+    },
+    {
+      "name": "one exposure",
+      "asOf": "2026-10-10",
+      "snapshot": {
+        "revision": 0,
+        "profile": {
+          "id": "test",
+          "displayName": "Test",
+          "email": "test@example.test",
+          "timezone": "UTC",
+          "unit": "kg",
+          "goal": "build-muscle",
+          "startWeight": 70,
+          "goalStartedAt": "2026-10-01",
+          "role": "user"
+        },
+        "programs": [
+          {
+            "id": "progress-program",
+            "name": "Recorded test plan",
+            "level": "Intermediate",
+            "goal": "build-muscle",
+            "workouts": [
+              {
+                "id": "progress-workout",
+                "name": "Lower body",
+                "warmup": [],
+                "muscles": [],
+                "exercises": [
+                  {
+                    "id": "rx-squat",
+                    "exerciseId": "squat",
+                    "sets": 3,
+                    "repsMin": 6,
+                    "repsMax": 10,
+                    "restSeconds": 120
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "activeProgramId": "progress-program",
+        "schedule": [],
+        "sessions": [
+          {
+            "id": "session-0",
+            "workoutId": "progress-workout",
+            "name": "Lower body",
+            "date": "2026-10-08",
+            "startedAt": "2026-10-08T09:00:00Z",
+            "finishedAt": "2026-10-08T10:00:00Z",
+            "exercises": [
+              {
+                "id": "entry-0",
+                "exerciseId": "squat",
+                "prescription": {
+                  "id": "rx-squat",
+                  "exerciseId": "squat",
+                  "sets": 3,
+                  "repsMin": 6,
+                  "repsMax": 10,
+                  "restSeconds": 120
+                },
+                "notes": "",
+                "sets": [
+                  {
+                    "id": "set-0-0",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-0-1",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-0-2",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  }
+                ]
+              }
+            ],
+            "restDeadline": null,
+            "restDuration": 90
+          }
+        ],
+        "foodEntries": [],
+        "targets": [],
+        "checkIns": [],
+        "weights": [],
+        "lessons": [],
+        "provider": {
+          "provider": "openai",
+          "model": "",
+          "enabled": false,
+          "configured": false
+        }
+      },
+      "kind": ""
+    },
+    {
+      "name": "hard upper range",
+      "asOf": "2026-10-10",
+      "snapshot": {
+        "revision": 0,
+        "profile": {
+          "id": "test",
+          "displayName": "Test",
+          "email": "test@example.test",
+          "timezone": "UTC",
+          "unit": "kg",
+          "goal": "build-muscle",
+          "startWeight": 70,
+          "goalStartedAt": "2026-10-01",
+          "role": "user"
+        },
+        "programs": [
+          {
+            "id": "progress-program",
+            "name": "Recorded test plan",
+            "level": "Intermediate",
+            "goal": "build-muscle",
+            "workouts": [
+              {
+                "id": "progress-workout",
+                "name": "Lower body",
+                "warmup": [],
+                "muscles": [],
+                "exercises": [
+                  {
+                    "id": "rx-squat",
+                    "exerciseId": "squat",
+                    "sets": 3,
+                    "repsMin": 6,
+                    "repsMax": 10,
+                    "restSeconds": 120
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "activeProgramId": "progress-program",
+        "schedule": [],
+        "sessions": [
+          {
+            "id": "session-0",
+            "workoutId": "progress-workout",
+            "name": "Lower body",
+            "date": "2026-10-08",
+            "startedAt": "2026-10-08T09:00:00Z",
+            "finishedAt": "2026-10-08T10:00:00Z",
+            "exercises": [
+              {
+                "id": "entry-0",
+                "exerciseId": "squat",
+                "prescription": {
+                  "id": "rx-squat",
+                  "exerciseId": "squat",
+                  "sets": 3,
+                  "repsMin": 6,
+                  "repsMax": 10,
+                  "restSeconds": 120
+                },
+                "notes": "",
+                "sets": [
+                  {
+                    "id": "set-0-0",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "hard",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-0-1",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "hard",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-0-2",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "hard",
+                    "completed": true
+                  }
+                ]
+              }
+            ],
+            "restDeadline": null,
+            "restDuration": 90
+          },
+          {
+            "id": "session-1",
+            "workoutId": "progress-workout",
+            "name": "Lower body",
+            "date": "2026-10-05",
+            "startedAt": "2026-10-05T09:00:00Z",
+            "finishedAt": "2026-10-05T10:00:00Z",
+            "exercises": [
+              {
+                "id": "entry-1",
+                "exerciseId": "squat",
+                "prescription": {
+                  "id": "rx-squat",
+                  "exerciseId": "squat",
+                  "sets": 3,
+                  "repsMin": 6,
+                  "repsMax": 10,
+                  "restSeconds": 120
+                },
+                "notes": "",
+                "sets": [
+                  {
+                    "id": "set-1-0",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "hard",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-1-1",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "hard",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-1-2",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "hard",
+                    "completed": true
+                  }
+                ]
+              }
+            ],
+            "restDeadline": null,
+            "restDuration": 90
+          }
+        ],
+        "foodEntries": [],
+        "targets": [],
+        "checkIns": [],
+        "weights": [],
+        "lessons": [],
+        "provider": {
+          "provider": "openai",
+          "model": "",
+          "enabled": false,
+          "configured": false
+        }
+      },
+      "kind": ""
+    },
+    {
+      "name": "latest partial exposure",
+      "asOf": "2026-10-10",
+      "snapshot": {
+        "revision": 0,
+        "profile": {
+          "id": "test",
+          "displayName": "Test",
+          "email": "test@example.test",
+          "timezone": "UTC",
+          "unit": "kg",
+          "goal": "build-muscle",
+          "startWeight": 70,
+          "goalStartedAt": "2026-10-01",
+          "role": "user"
+        },
+        "programs": [
+          {
+            "id": "progress-program",
+            "name": "Recorded test plan",
+            "level": "Intermediate",
+            "goal": "build-muscle",
+            "workouts": [
+              {
+                "id": "progress-workout",
+                "name": "Lower body",
+                "warmup": [],
+                "muscles": [],
+                "exercises": [
+                  {
+                    "id": "rx-squat",
+                    "exerciseId": "squat",
+                    "sets": 3,
+                    "repsMin": 6,
+                    "repsMax": 10,
+                    "restSeconds": 120
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "activeProgramId": "progress-program",
+        "schedule": [],
+        "sessions": [
+          {
+            "id": "session-0",
+            "workoutId": "progress-workout",
+            "name": "Lower body",
+            "date": "2026-10-08",
+            "startedAt": "2026-10-08T09:00:00Z",
+            "finishedAt": "2026-10-08T10:00:00Z",
+            "exercises": [
+              {
+                "id": "entry-0",
+                "exerciseId": "squat",
+                "prescription": {
+                  "id": "rx-squat",
+                  "exerciseId": "squat",
+                  "sets": 3,
+                  "repsMin": 6,
+                  "repsMax": 10,
+                  "restSeconds": 120
+                },
+                "notes": "",
+                "sets": [
+                  {
+                    "id": "set-0-0",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": false
+                  },
+                  {
+                    "id": "set-0-1",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-0-2",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  }
+                ]
+              }
+            ],
+            "restDeadline": null,
+            "restDuration": 90
+          },
+          {
+            "id": "session-1",
+            "workoutId": "progress-workout",
+            "name": "Lower body",
+            "date": "2026-10-05",
+            "startedAt": "2026-10-05T09:00:00Z",
+            "finishedAt": "2026-10-05T10:00:00Z",
+            "exercises": [
+              {
+                "id": "entry-1",
+                "exerciseId": "squat",
+                "prescription": {
+                  "id": "rx-squat",
+                  "exerciseId": "squat",
+                  "sets": 3,
+                  "repsMin": 6,
+                  "repsMax": 10,
+                  "restSeconds": 120
+                },
+                "notes": "",
+                "sets": [
+                  {
+                    "id": "set-1-0",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-1-1",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-1-2",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  }
+                ]
+              }
+            ],
+            "restDeadline": null,
+            "restDuration": 90
+          },
+          {
+            "id": "session-2",
+            "workoutId": "progress-workout",
+            "name": "Lower body",
+            "date": "2026-10-02",
+            "startedAt": "2026-10-02T09:00:00Z",
+            "finishedAt": "2026-10-02T10:00:00Z",
+            "exercises": [
+              {
+                "id": "entry-2",
+                "exerciseId": "squat",
+                "prescription": {
+                  "id": "rx-squat",
+                  "exerciseId": "squat",
+                  "sets": 3,
+                  "repsMin": 6,
+                  "repsMax": 10,
+                  "restSeconds": 120
+                },
+                "notes": "",
+                "sets": [
+                  {
+                    "id": "set-2-0",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-2-1",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-2-2",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  }
+                ]
+              }
+            ],
+            "restDeadline": null,
+            "restDuration": 90
+          }
+        ],
+        "foodEntries": [],
+        "targets": [],
+        "checkIns": [],
+        "weights": [],
+        "lessons": [],
+        "provider": {
+          "provider": "openai",
+          "model": "",
+          "enabled": false,
+          "configured": false
+        }
+      },
+      "kind": ""
+    },
+    {
+      "name": "mixed loads",
+      "asOf": "2026-10-10",
+      "snapshot": {
+        "revision": 0,
+        "profile": {
+          "id": "test",
+          "displayName": "Test",
+          "email": "test@example.test",
+          "timezone": "UTC",
+          "unit": "kg",
+          "goal": "build-muscle",
+          "startWeight": 70,
+          "goalStartedAt": "2026-10-01",
+          "role": "user"
+        },
+        "programs": [
+          {
+            "id": "progress-program",
+            "name": "Recorded test plan",
+            "level": "Intermediate",
+            "goal": "build-muscle",
+            "workouts": [
+              {
+                "id": "progress-workout",
+                "name": "Lower body",
+                "warmup": [],
+                "muscles": [],
+                "exercises": [
+                  {
+                    "id": "rx-squat",
+                    "exerciseId": "squat",
+                    "sets": 3,
+                    "repsMin": 6,
+                    "repsMax": 10,
+                    "restSeconds": 120
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "activeProgramId": "progress-program",
+        "schedule": [],
+        "sessions": [
+          {
+            "id": "session-0",
+            "workoutId": "progress-workout",
+            "name": "Lower body",
+            "date": "2026-10-08",
+            "startedAt": "2026-10-08T09:00:00Z",
+            "finishedAt": "2026-10-08T10:00:00Z",
+            "exercises": [
+              {
+                "id": "entry-0",
+                "exerciseId": "squat",
+                "prescription": {
+                  "id": "rx-squat",
+                  "exerciseId": "squat",
+                  "sets": 3,
+                  "repsMin": 6,
+                  "repsMax": 10,
+                  "restSeconds": 120
+                },
+                "notes": "",
+                "sets": [
+                  {
+                    "id": "set-0-0",
+                    "weight": 40,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-0-1",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-0-2",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  }
+                ]
+              }
+            ],
+            "restDeadline": null,
+            "restDuration": 90
+          },
+          {
+            "id": "session-1",
+            "workoutId": "progress-workout",
+            "name": "Lower body",
+            "date": "2026-10-05",
+            "startedAt": "2026-10-05T09:00:00Z",
+            "finishedAt": "2026-10-05T10:00:00Z",
+            "exercises": [
+              {
+                "id": "entry-1",
+                "exerciseId": "squat",
+                "prescription": {
+                  "id": "rx-squat",
+                  "exerciseId": "squat",
+                  "sets": 3,
+                  "repsMin": 6,
+                  "repsMax": 10,
+                  "restSeconds": 120
+                },
+                "notes": "",
+                "sets": [
+                  {
+                    "id": "set-1-0",
+                    "weight": 40,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-1-1",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-1-2",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  }
+                ]
+              }
+            ],
+            "restDeadline": null,
+            "restDuration": 90
+          }
+        ],
+        "foodEntries": [],
+        "targets": [],
+        "checkIns": [],
+        "weights": [],
+        "lessons": [],
+        "provider": {
+          "provider": "openai",
+          "model": "",
+          "enabled": false,
+          "configured": false
+        }
+      },
+      "kind": ""
+    },
+    {
+      "name": "changed prescription",
+      "asOf": "2026-10-10",
+      "snapshot": {
+        "revision": 0,
+        "profile": {
+          "id": "test",
+          "displayName": "Test",
+          "email": "test@example.test",
+          "timezone": "UTC",
+          "unit": "kg",
+          "goal": "build-muscle",
+          "startWeight": 70,
+          "goalStartedAt": "2026-10-01",
+          "role": "user"
+        },
+        "programs": [
+          {
+            "id": "progress-program",
+            "name": "Recorded test plan",
+            "level": "Intermediate",
+            "goal": "build-muscle",
+            "workouts": [
+              {
+                "id": "progress-workout",
+                "name": "Lower body",
+                "warmup": [],
+                "muscles": [],
+                "exercises": [
+                  {
+                    "id": "rx-squat",
+                    "exerciseId": "squat",
+                    "sets": 3,
+                    "repsMin": 6,
+                    "repsMax": 10,
+                    "restSeconds": 120
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "activeProgramId": "progress-program",
+        "schedule": [],
+        "sessions": [
+          {
+            "id": "session-0",
+            "workoutId": "progress-workout",
+            "name": "Lower body",
+            "date": "2026-10-08",
+            "startedAt": "2026-10-08T09:00:00Z",
+            "finishedAt": "2026-10-08T10:00:00Z",
+            "exercises": [
+              {
+                "id": "entry-0",
+                "exerciseId": "squat",
+                "prescription": {
+                  "id": "rx-squat",
+                  "exerciseId": "squat",
+                  "sets": 3,
+                  "repsMin": 6,
+                  "repsMax": 99,
+                  "restSeconds": 120
+                },
+                "notes": "",
+                "sets": [
+                  {
+                    "id": "set-0-0",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-0-1",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-0-2",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  }
+                ]
+              }
+            ],
+            "restDeadline": null,
+            "restDuration": 90
+          },
+          {
+            "id": "session-1",
+            "workoutId": "progress-workout",
+            "name": "Lower body",
+            "date": "2026-10-05",
+            "startedAt": "2026-10-05T09:00:00Z",
+            "finishedAt": "2026-10-05T10:00:00Z",
+            "exercises": [
+              {
+                "id": "entry-1",
+                "exerciseId": "squat",
+                "prescription": {
+                  "id": "rx-squat",
+                  "exerciseId": "squat",
+                  "sets": 3,
+                  "repsMin": 6,
+                  "repsMax": 10,
+                  "restSeconds": 120
+                },
+                "notes": "",
+                "sets": [
+                  {
+                    "id": "set-1-0",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-1-1",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-1-2",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  }
+                ]
+              }
+            ],
+            "restDeadline": null,
+            "restDuration": 90
+          },
+          {
+            "id": "session-2",
+            "workoutId": "progress-workout",
+            "name": "Lower body",
+            "date": "2026-10-02",
+            "startedAt": "2026-10-02T09:00:00Z",
+            "finishedAt": "2026-10-02T10:00:00Z",
+            "exercises": [
+              {
+                "id": "entry-2",
+                "exerciseId": "squat",
+                "prescription": {
+                  "id": "rx-squat",
+                  "exerciseId": "squat",
+                  "sets": 3,
+                  "repsMin": 6,
+                  "repsMax": 10,
+                  "restSeconds": 120
+                },
+                "notes": "",
+                "sets": [
+                  {
+                    "id": "set-2-0",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-2-1",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-2-2",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  }
+                ]
+              }
+            ],
+            "restDeadline": null,
+            "restDuration": 90
+          }
+        ],
+        "foodEntries": [],
+        "targets": [],
+        "checkIns": [],
+        "weights": [],
+        "lessons": [],
+        "provider": {
+          "provider": "openai",
+          "model": "",
+          "enabled": false,
+          "configured": false
+        }
+      },
+      "kind": ""
+    },
+    {
+      "name": "stale observations",
+      "asOf": "2026-10-25",
+      "snapshot": {
+        "revision": 0,
+        "profile": {
+          "id": "test",
+          "displayName": "Test",
+          "email": "test@example.test",
+          "timezone": "UTC",
+          "unit": "kg",
+          "goal": "build-muscle",
+          "startWeight": 70,
+          "goalStartedAt": "2026-10-01",
+          "role": "user"
+        },
+        "programs": [
+          {
+            "id": "progress-program",
+            "name": "Recorded test plan",
+            "level": "Intermediate",
+            "goal": "build-muscle",
+            "workouts": [
+              {
+                "id": "progress-workout",
+                "name": "Lower body",
+                "warmup": [],
+                "muscles": [],
+                "exercises": [
+                  {
+                    "id": "rx-squat",
+                    "exerciseId": "squat",
+                    "sets": 3,
+                    "repsMin": 6,
+                    "repsMax": 10,
+                    "restSeconds": 120
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "activeProgramId": "progress-program",
+        "schedule": [],
+        "sessions": [
+          {
+            "id": "session-0",
+            "workoutId": "progress-workout",
+            "name": "Lower body",
+            "date": "2026-10-01",
+            "startedAt": "2026-10-01T09:00:00Z",
+            "finishedAt": "2026-10-01T10:00:00Z",
+            "exercises": [
+              {
+                "id": "entry-0",
+                "exerciseId": "squat",
+                "prescription": {
+                  "id": "rx-squat",
+                  "exerciseId": "squat",
+                  "sets": 3,
+                  "repsMin": 6,
+                  "repsMax": 10,
+                  "restSeconds": 120
+                },
+                "notes": "",
+                "sets": [
+                  {
+                    "id": "set-0-0",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-0-1",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-0-2",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  }
+                ]
+              }
+            ],
+            "restDeadline": null,
+            "restDuration": 90
+          },
+          {
+            "id": "session-1",
+            "workoutId": "progress-workout",
+            "name": "Lower body",
+            "date": "2026-10-02",
+            "startedAt": "2026-10-02T09:00:00Z",
+            "finishedAt": "2026-10-02T10:00:00Z",
+            "exercises": [
+              {
+                "id": "entry-1",
+                "exerciseId": "squat",
+                "prescription": {
+                  "id": "rx-squat",
+                  "exerciseId": "squat",
+                  "sets": 3,
+                  "repsMin": 6,
+                  "repsMax": 10,
+                  "restSeconds": 120
+                },
+                "notes": "",
+                "sets": [
+                  {
+                    "id": "set-1-0",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-1-1",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  },
+                  {
+                    "id": "set-1-2",
+                    "weight": 50,
+                    "reps": 10,
+                    "effort": "medium",
+                    "completed": true
+                  }
+                ]
+              }
+            ],
+            "restDeadline": null,
+            "restDuration": 90
+          }
+        ],
+        "foodEntries": [],
+        "targets": [],
+        "checkIns": [],
+        "weights": [],
+        "lessons": [],
+        "provider": {
+          "provider": "openai",
+          "model": "",
+          "enabled": false,
+          "configured": false
+        }
+      },
+      "kind": ""
+    }
+  ]
+}

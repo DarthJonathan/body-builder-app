@@ -47,7 +47,7 @@ for (const { template, previewIndex, workout, exercise } of addedProgramCases) {
     const before = await snapshot(app);
     await app.getByRole('button', { name: 'Choose a Program', exact: true }).click();
     const dialog = app.getByRole('dialog');
-    await expect(dialog.getByRole('heading', { level: 3 })).toHaveCount(7);
+    await expect(dialog.getByRole('heading', { level: 3 })).toHaveCount(17);
     const card = dialog.locator('article').filter({ has: app.getByRole('heading', { name: template.name, exact: true }) });
     await expect(card.getByRole('link', { name: 'View source' })).toHaveAttribute('href', template.source);
     await expect(card).toContainText(template.sourceName!);

@@ -1,0 +1,31 @@
+// !$*UTF8*$!
+{
+archiveVersion = 1; classes = {}; objectVersion = 56;
+objects = {
+000000000000000000000014 = {isa = PBXBuildFile; fileRef = 00000000000000000000000A; };
+00000000000000000000000A = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+000000000000000000000015 = {isa = PBXBuildFile; fileRef = 00000000000000000000000B; };
+00000000000000000000000B = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthReader.swift; sourceTree = "<group>"; };
+000000000000000000000016 = {isa = PBXBuildFile; fileRef = 00000000000000000000000C; };
+00000000000000000000000C = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnergyPolicy.swift; sourceTree = "<group>"; };
+000000000000000000000030 = {isa = PBXFileReference; explicitFileType = wrapper.application; path = BodyBuilder.app; sourceTree = BUILT_PRODUCTS_DIR; };
+000000000000000000000031 = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
+000000000000000000000032 = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+000000000000000000000033 = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BodyBuilder.entitlements; sourceTree = "<group>"; };
+000000000000000000000040 = {isa = PBXGroup; children = (000000000000000000000041,000000000000000000000031,000000000000000000000042); sourceTree = "<group>"; };
+000000000000000000000041 = {isa = PBXGroup; children = (00000000000000000000000A,00000000000000000000000B,00000000000000000000000C,000000000000000000000032,000000000000000000000033); path = BodyBuilder; sourceTree = "<group>"; };
+000000000000000000000042 = {isa = PBXGroup; children = (000000000000000000000030); name = Products; sourceTree = "<group>"; };
+000000000000000000000050 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (000000000000000000000014,000000000000000000000015,000000000000000000000016); runOnlyForDeploymentPostprocessing = 0; };
+000000000000000000000051 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+000000000000000000000052 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+000000000000000000000060 = {isa = PBXNativeTarget; buildConfigurationList = 000000000000000000000072; buildPhases = (000000000000000000000050,000000000000000000000051,000000000000000000000052); buildRules = (); dependencies = (); name = BodyBuilder; productName = BodyBuilder; productReference = 000000000000000000000030; productType = "com.apple.product-type.application"; };
+000000000000000000000061 = {isa = PBXProject; attributes = {LastSwiftUpdateCheck = 1600; LastUpgradeCheck = 1600; TargetAttributes = {000000000000000000000060 = {CreatedOnToolsVersion = 16.0; SystemCapabilities = {com.apple.HealthKit = {enabled = 1; }; }; }; }; }; buildConfigurationList = 000000000000000000000071; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en,Base); mainGroup = 000000000000000000000040; productRefGroup = 000000000000000000000042; projectDirPath = ""; projectRoot = ""; targets = (000000000000000000000060); };
+000000000000000000000071 = {isa = XCConfigurationList; buildConfigurations = (000000000000000000000081,000000000000000000000082); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+000000000000000000000072 = {isa = XCConfigurationList; buildConfigurations = (000000000000000000000083,000000000000000000000084); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+000000000000000000000081 = {isa = XCBuildConfiguration; buildSettings = { CLANG_ENABLE_MODULES = YES; SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 16.4; SWIFT_VERSION = 5.0; SWIFT_OPTIMIZATION_LEVEL = -Onone; }; name = Debug; };
+000000000000000000000082 = {isa = XCBuildConfiguration; buildSettings = { CLANG_ENABLE_MODULES = YES; SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 16.4; SWIFT_VERSION = 5.0; SWIFT_OPTIMIZATION_LEVEL = -O; }; name = Release; };
+000000000000000000000083 = {isa = XCBuildConfiguration; baseConfigurationReference = 000000000000000000000031; buildSettings = { CODE_SIGN_STYLE = Automatic; CODE_SIGN_ENTITLEMENTS = BodyBuilder/BodyBuilder.entitlements; INFOPLIST_FILE = BodyBuilder/Info.plist; PRODUCT_NAME = "$(TARGET_NAME)"; TARGETED_DEVICE_FAMILY = "1,2"; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SWIFT_VERSION = 5.0; IPHONEOS_DEPLOYMENT_TARGET = 16.4; }; name = Debug; };
+000000000000000000000084 = {isa = XCBuildConfiguration; baseConfigurationReference = 000000000000000000000031; buildSettings = { CODE_SIGN_STYLE = Automatic; CODE_SIGN_ENTITLEMENTS = BodyBuilder/BodyBuilder.entitlements; INFOPLIST_FILE = BodyBuilder/Info.plist; PRODUCT_NAME = "$(TARGET_NAME)"; TARGETED_DEVICE_FAMILY = "1,2"; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SWIFT_VERSION = 5.0; IPHONEOS_DEPLOYMENT_TARGET = 16.4; }; name = Release; };
+};
+rootObject = 000000000000000000000061;
+}

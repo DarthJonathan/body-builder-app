@@ -53,7 +53,8 @@ export function project(server: AppSnapshot, outbox: PendingMutation[]): AppSnap
       }
       case 'saveLesson': upsert(result.lessons, payload as Lesson); break;
       case 'deleteLesson': result.lessons = result.lessons.filter(item => item.id !== (payload as { id: string }).id); break;
-      case 'useTemplate': case 'startWorkout': case 'copyFoods': break;
+      case 'saveHealthEnergy': result.healthEnergy = (payload as {energy: AppSnapshot['healthEnergy'] | null}).energy ?? undefined; break;
+      case 'importProgram': case 'createGoalPlan': case 'useTemplate': case 'startWorkout': case 'copyFoods': break;
     }
   }
   return result;

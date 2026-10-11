@@ -6,13 +6,17 @@ A training PWA with SvelteKit 5/TypeScript and a Go/PostgreSQL backend. The five
 
 Public registration and password sign-in are real. New accounts start empty. Programs, calendar assignments, workout sets/effort/rest/completion, food logs, dated nutrition overrides, daily weight-and-notes check-ins, progress summaries, and lesson links/notes save privately to PostgreSQL and sync between devices. Templates are explicitly chosen and copied. Session prescriptions are frozen so later program edits cannot rewrite workout history.
 
-Workout → Choose a Program includes seven starter templates: Upper / Lower, Beginner Full Body, PHUL Strength & Size, Push / Pull / Legs, Barbell 5×5, Dumbbell Full Body, and Glute Focus. Each includes source attribution, exercise guides and prescriptions; adaptations are disclosed in the chooser. Copies are private and editable, with calendar dates chosen separately. See the [program-library plan](PROGRAM_LIBRARY_PLAN.md) for the source mappings and verification.
+Workout → Choose a Program includes 17 starter templates: seven source-based routines and ten BodyBuilder-authored programs covering 2–6 days, full body, upper/lower, strength, PPL, dumbbells and glute focus. Preview their prescriptions, progression, nutrition guidance and evidence. **Workout → Import / Export** accepts versioned JSON plans: everyone can upsert personal programs; administrators can publish to the shared starter library. Export, file upload and downloadable examples are included. See [programs and import instructions](docs/programs/README.md).
 
 The live client keeps an account-specific IndexedDB snapshot and durable outbox. Existing records can be edited through a connection outage and replayed with stable retry IDs. Conflicting device edits require an explicit keep-local/use-server decision. Pending changes remain visible and can be reviewed or discarded. Copying a template or food day and starting a new workout need server acknowledgement before the new records can be edited. Signing out clears visible private data and drafts. Private API responses are excluded from service-worker caches.
 
 Food search uses bundled USDA ingredient records without an API key, then Open Food Facts for unmatched packaged-food searches. Database sources, servings, and reviewed quantities are retained. Saved foods and USDA matches remain available during upstream failures; manual entry is available. Optional **Ask AI** and **Estimate from Photo** actions use an administrator's OpenAI, Anthropic, or OpenRouter configuration. Photo drafts require review and explicit saving. Regular calculation, food search, and logging do not call AI. Keys are encrypted in PostgreSQL and never appear in snapshots or the outbox. See [provider and pinned-dataset details](backend/providers/README.md).
 
 **Calculate Targets** asks for age, equation sex, height, weight, activity and goal, with adjustable calorie/protein/fat settings. It shows a Mifflin–St Jeor estimate before **Apply Targets** saves it. Manual overrides keep the original inputs/version; later calculations and check-ins do not silently replace saved targets. The same version can prepare an offline preview. See the [calculation policy](NUTRITION_IMPLEMENTATION_PLAN.md). Steps and progress-photo galleries are outside this release. Exercise photographs retain [provenance](frontend/static/images/README.md); hero/anatomy vectors are temporary artwork.
+
+**Progress → Change** opens the goal questionnaire and ranks actual structured starter, admin-published and private imported programs by experience, equipment, days/time, muscle focus and training priority. Review reasons, excluded plans, the draggable weekday schedule and editable calorie/macronutrient targets before saving a private plan and four-week calendar together. **Progress → Review My Progress** explains conservative training and nutrition suggestions from recorded sets, effort, weights and meal logs, with links to editable controls. Stale selections require a new preview, manual targets remain protected, and offline final creation waits for server acknowledgement. See [expert rules, sources and limits](docs/EXPERT_SYSTEM.md).
+
+The [native iPhone wrapper](native/ios/README.md) opens `https://bodybuilder.lucasgrey.dev` and adds consent-based, read-only Apple Health energy sync. A sufficiently complete recent history can replace the equation/activity estimate with average resting + active energy. There is no second activity multiplier. Both paths are estimates rather than measured BMR. The PWA remains available on iPhone and Android; direct HealthKit reading requires the signed native app. Xcode signing and real-device HealthKit verification remain required.
 
 ## Run locally
 
@@ -77,8 +81,10 @@ From `frontend`:
 npm run check
 npm run test:mock
 npm run test:nutrition
+npm run test:goals
+npm run test:expert
 npm run test:ui
-npm run test:ui:production -- tests/pwa.spec.ts
+npm run test:ui:production -- tests/pwa.spec.ts tests/goal-onboarding.spec.ts
 ```
 
 For live browser tests, build isolated test executables from `backend`:
@@ -92,7 +98,7 @@ Start `python3 scripts/run_e2e_backend.py` from the root and leave it running. I
 
 ```sh
 E2E_ADMIN_EMAIL=e2e-admin@bodybuilder.test E2E_ADMIN_PASSWORD='BodyBuilder-e2e-admin-42!' npm run test:live
-E2E_ADMIN_EMAIL=e2e-admin@bodybuilder.test E2E_ADMIN_PASSWORD='BodyBuilder-e2e-admin-42!' npm run test:live:production -- tests/live/nutrition.spec.ts tests/live/offline.spec.ts
+E2E_ADMIN_EMAIL=e2e-admin@bodybuilder.test E2E_ADMIN_PASSWORD='BodyBuilder-e2e-admin-42!' npm run test:live:production -- tests/live/nutrition.spec.ts tests/live/offline.spec.ts tests/live/goals.spec.ts
 ```
 
 Install matching browsers with `npx playwright install chromium webkit` if needed. Run production suites/builds sequentially because they share SvelteKit output. See the [live verification report](docs/LIVE_VERIFICATION.md), [browser coverage](frontend/tests/README.md), and [historical mock verification](frontend/docs/VERIFICATION.md).
@@ -101,7 +107,7 @@ Install matching browsers with `npx playwright install chromium webkit` if neede
 
 [publish](.github/workflows/publish.yml) follows expense_tracker: pushes to `main` and manual runs on `main` build and publish `ghcr.io/<lowercase-owner>/bodybuilder-backend:latest` and `ghcr.io/<lowercase-owner>/bodybuilder-frontend:latest` with `GITHUB_TOKEN`. Publishing runs independently of [CI checks](.github/workflows/ci.yml). Pull requests, other branch pushes, and manual CI runs execute tests without publishing.
 
-Program-library updates are bundled in the Go binary and frontend image, including the local exercise photographs. After publishing, pull and redeploy both images so the catalogue, guides and assets stay in sync. This library expansion requires no database migration, new environment variable or remote template API; existing saved programs remain valid.
+Program-library updates are bundled in the Go binary and frontend image, including the local exercise photographs. After publishing, pull and redeploy both images so the catalogue, guides and assets stay in sync. The backend now creates a `program_templates` table during its normal startup migration for durable admin-published JSON templates. No new environment variable or external template API is needed; existing saved programs remain valid.
 
 CI checks Go formatting/vet/race tests with real PostgreSQL, builds the API/admin CLI, checks Svelte/TypeScript and client unit tests, runs Chromium/WebKit UI and production/offline checks, and builds both production Docker images. Browser reports and failure traces/screenshots are retained for seven days. Test jobs use disposable databases, synthetic accounts, and local provider stubs; they need no production secrets or paid AI keys. See [CI setup and local reproduction](docs/CI.md). Hosted verification of the current changes and image publishing require committing and pushing them to GitHub. Server deployment is not configured.
 
@@ -110,7 +116,10 @@ CI checks Go formatting/vet/race tests with real PostgreSQL, builds the API/admi
 - [Live API contract](docs/api/contract.md)
 - [Backend execution plan](BACKEND_IMPLEMENTATION_PLAN.md)
 - [Nutrition execution plan](NUTRITION_IMPLEMENTATION_PLAN.md)
-- [Expanded program-library plan and sources](PROGRAM_LIBRARY_PLAN.md)
+- [Generated programs, source rationale and app import instructions](docs/programs/README.md)
+- [Program import execution plan](PROGRAM_IMPORT_PLAN.md)
+- [Goal onboarding plan and sources](GOAL_ONBOARDING_PLAN.md)
+- [iPhone wrapper, signing and Apple Health policy](native/ios/README.md)
 - [CI execution plan](CI_IMPLEMENTATION_PLAN.md)
 - [Original product plan](IMPLEMENTATION_PLAN.md)
 - [Mock contract](frontend/docs/MOCK_API.md)

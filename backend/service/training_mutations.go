@@ -62,6 +62,33 @@ func assignDate(s *domain.AppSnapshot, date string, workoutID *string) {
 }
 func (s *TrainingService) apply(data *domain.AppSnapshot, operation string, payload json.RawMessage) error {
 	switch operation {
+	case "importProgram":
+		input, err := decodePayload[struct {
+			Document domain.ProgramDocument `json:"document"`
+		}](payload)
+		if err != nil {
+			return err
+		}
+		return s.importProgram(data, input.Document)
+	case "createGoalPlan":
+		input, err := decodePayload[domain.CreateGoalPlan](payload)
+		if err != nil {
+			return err
+		}
+		return s.createGoalPlan(data, input)
+	case "saveHealthEnergy":
+		input, err := decodePayload[struct {
+			Energy *domain.HealthEnergy `json:"energy"`
+		}](payload)
+		if err != nil {
+			return err
+		}
+		if input.Energy != nil {
+			if err := domain.ValidateRecentHealthEnergy(*input.Energy, s.now()); err != nil {
+				return invalidTraining(err)
+			}
+		}
+		data.HealthEnergy = input.Energy
 	case "updateProfile":
 		patch, err := decodePayload[map[string]json.RawMessage](payload)
 		if err != nil {
@@ -109,6 +136,9 @@ func (s *TrainingService) apply(data *domain.AppSnapshot, operation string, payl
 			if other.ID == p.ID {
 				continue
 			}
+			if p.Details != nil && other.Details != nil && p.Details.Key == other.Details.Key {
+				return invalidTraining(errors.New("a program key already belongs to another private program"))
+			}
 			for _, w := range other.Workouts {
 				for _, candidate := range p.Workouts {
 					if candidate.ID == w.ID {
@@ -127,20 +157,17 @@ func (s *TrainingService) apply(data *domain.AppSnapshot, operation string, payl
 		if err != nil {
 			return err
 		}
-		var chosen *domain.ProgramTemplate
-		for i := range s.Catalogue.Templates {
-			if s.Catalogue.Templates[i].ID == in.TemplateID {
-				chosen = &s.Catalogue.Templates[i]
-				break
-			}
-		}
-		if chosen == nil {
-			return missingTraining("that starter template is unavailable")
+		chosen, err := s.findProgramTemplate(in.TemplateID)
+		if err != nil {
+			return err
 		}
 		encoded, _ := json.Marshal(chosen.Program)
 		var p domain.Program
 		_ = json.Unmarshal(encoded, &p)
 		p.ID = newRecordID("program")
+		if p.Details != nil {
+			p.Details.Key = "copy-" + p.ID
+		}
 		for wi := range p.Workouts {
 			w := &p.Workouts[wi]
 			w.ID = newRecordID("workout")

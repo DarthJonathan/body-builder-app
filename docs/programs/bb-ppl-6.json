@@ -1,0 +1,355 @@
+{
+  "schemaVersion": "bodybuilder.program.v1",
+  "key": "bb-ppl-6",
+  "version": 1,
+  "name": "6-Day PPL Muscle",
+  "description": "Two push, pull and leg exposures each week. Select only when this frequency fits your routine and recovery.",
+  "experience": [
+    "intermediate",
+    "advanced"
+  ],
+  "goals": [
+    "build-muscle",
+    "maintain",
+    "lose-fat"
+  ],
+  "equipment": "full-gym",
+  "daysPerWeek": 6,
+  "sessionMinutes": 60,
+  "focus": "balanced",
+  "purpose": "hypertrophy",
+  "reviewedAt": "2026-10-11",
+  "notes": "BodyBuilder-authored starting template for healthy adults. The cited research informs general principles; these exact exercise combinations and starting doses are app policy. Session duration is an estimate. Adapt to individual tolerance and review with an appropriate professional when needed.",
+  "progression": {
+    "method": "double-progression",
+    "instructions": "Choose a load that allows the lower end of the rep range with controlled technique and a few repetitions left. Add repetitions before weight. When every working set reaches the upper end on two exposures, try the smallest available load increase and return to the lower end. For bodyweight or timed holds, add repetitions or seconds within the range before choosing a harder variation.",
+    "stall": "If performance drops for two exposures, keep the load and review technique, sleep and training volume. If still struggling, reduce load by about 5\u201310% or remove one accessory set for a week, then reassess. This is manual guidance, not an automatic load change."
+  },
+  "nutrition": {
+    "proteinPerKg": 1.6,
+    "fatPercent": 25,
+    "instructions": "Calculate personal maintenance calories in Goal or Nutrition Targets. Start with the selected goal adjustment, then review several weeks of logged intake and weight trends. Use the protein and fat defaults below as editable starting points; carbohydrate fills the remaining calories. A training template does not establish personal calorie needs or dietary suitability."
+  },
+  "evidence": [
+    {
+      "title": "ACSM resistance-training position stand (2026)",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12965823/"
+    },
+    {
+      "title": "Morton et al. protein and resistance-training meta-analysis",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5867436/"
+    }
+  ],
+  "workouts": [
+    {
+      "key": "push-a",
+      "name": "Push A",
+      "warmup": [
+        "Begin with 5 minutes of easy movement.",
+        "Use lighter practice sets for the first demanding lifts; warmup sets are not working sets."
+      ],
+      "exercises": [
+        {
+          "key": "bench-press",
+          "exerciseId": "bench-press",
+          "sets": 3,
+          "repsMin": 6,
+          "repsMax": 10,
+          "restSeconds": 180
+        },
+        {
+          "key": "incline-press",
+          "exerciseId": "incline-press",
+          "sets": 2,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 120
+        },
+        {
+          "key": "shoulder-press",
+          "exerciseId": "shoulder-press",
+          "sets": 2,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 120
+        },
+        {
+          "key": "dumbbell-lateral-raise",
+          "exerciseId": "dumbbell-lateral-raise",
+          "sets": 3,
+          "repsMin": 12,
+          "repsMax": 20,
+          "restSeconds": 60
+        },
+        {
+          "key": "triceps-pushdown",
+          "exerciseId": "triceps-pushdown",
+          "sets": 2,
+          "repsMin": 10,
+          "repsMax": 15,
+          "restSeconds": 60
+        }
+      ]
+    },
+    {
+      "key": "pull-a",
+      "name": "Pull A",
+      "warmup": [
+        "Begin with 5 minutes of easy movement.",
+        "Use lighter practice sets for the first demanding lifts; warmup sets are not working sets."
+      ],
+      "exercises": [
+        {
+          "key": "lat-pulldown",
+          "exerciseId": "lat-pulldown",
+          "sets": 3,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 120
+        },
+        {
+          "key": "supported-row",
+          "exerciseId": "supported-row",
+          "sets": 3,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 120
+        },
+        {
+          "key": "cable-row",
+          "exerciseId": "cable-row",
+          "sets": 2,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 120
+        },
+        {
+          "key": "rear-delt-fly",
+          "exerciseId": "rear-delt-fly",
+          "sets": 2,
+          "repsMin": 12,
+          "repsMax": 20,
+          "restSeconds": 60
+        },
+        {
+          "key": "dumbbell-curl",
+          "exerciseId": "dumbbell-curl",
+          "sets": 2,
+          "repsMin": 10,
+          "repsMax": 15,
+          "restSeconds": 60
+        }
+      ]
+    },
+    {
+      "key": "legs-a",
+      "name": "Legs A",
+      "warmup": [
+        "Begin with 5 minutes of easy movement.",
+        "Use lighter practice sets for the first demanding lifts; warmup sets are not working sets."
+      ],
+      "exercises": [
+        {
+          "key": "squat",
+          "exerciseId": "squat",
+          "sets": 3,
+          "repsMin": 6,
+          "repsMax": 10,
+          "restSeconds": 180
+        },
+        {
+          "key": "romanian-deadlift",
+          "exerciseId": "romanian-deadlift",
+          "sets": 3,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 150
+        },
+        {
+          "key": "leg-extension",
+          "exerciseId": "leg-extension",
+          "sets": 2,
+          "repsMin": 10,
+          "repsMax": 15,
+          "restSeconds": 90
+        },
+        {
+          "key": "leg-curl",
+          "exerciseId": "leg-curl",
+          "sets": 2,
+          "repsMin": 10,
+          "repsMax": 15,
+          "restSeconds": 90
+        },
+        {
+          "key": "calf-raise",
+          "exerciseId": "calf-raise",
+          "sets": 3,
+          "repsMin": 10,
+          "repsMax": 15,
+          "restSeconds": 60
+        }
+      ]
+    },
+    {
+      "key": "push-b",
+      "name": "Push B",
+      "warmup": [
+        "Begin with 5 minutes of easy movement.",
+        "Use lighter practice sets for the first demanding lifts; warmup sets are not working sets."
+      ],
+      "exercises": [
+        {
+          "key": "incline-press",
+          "exerciseId": "incline-press",
+          "sets": 3,
+          "repsMin": 6,
+          "repsMax": 10,
+          "restSeconds": 180
+        },
+        {
+          "key": "bench-press",
+          "exerciseId": "bench-press",
+          "sets": 3,
+          "repsMin": 6,
+          "repsMax": 10,
+          "restSeconds": 180
+        },
+        {
+          "key": "shoulder-press",
+          "exerciseId": "shoulder-press",
+          "sets": 2,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 120
+        },
+        {
+          "key": "dumbbell-lateral-raise",
+          "exerciseId": "dumbbell-lateral-raise",
+          "sets": 3,
+          "repsMin": 12,
+          "repsMax": 20,
+          "restSeconds": 60
+        },
+        {
+          "key": "triceps-pushdown",
+          "exerciseId": "triceps-pushdown",
+          "sets": 2,
+          "repsMin": 10,
+          "repsMax": 15,
+          "restSeconds": 60
+        }
+      ]
+    },
+    {
+      "key": "pull-b",
+      "name": "Pull B",
+      "warmup": [
+        "Begin with 5 minutes of easy movement.",
+        "Use lighter practice sets for the first demanding lifts; warmup sets are not working sets."
+      ],
+      "exercises": [
+        {
+          "key": "cable-row",
+          "exerciseId": "cable-row",
+          "sets": 3,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 120
+        },
+        {
+          "key": "supported-row",
+          "exerciseId": "supported-row",
+          "sets": 3,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 120
+        },
+        {
+          "key": "lat-pulldown",
+          "exerciseId": "lat-pulldown",
+          "sets": 3,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 120
+        },
+        {
+          "key": "rear-delt-fly",
+          "exerciseId": "rear-delt-fly",
+          "sets": 2,
+          "repsMin": 12,
+          "repsMax": 20,
+          "restSeconds": 60
+        },
+        {
+          "key": "dumbbell-curl",
+          "exerciseId": "dumbbell-curl",
+          "sets": 2,
+          "repsMin": 10,
+          "repsMax": 15,
+          "restSeconds": 60
+        }
+      ]
+    },
+    {
+      "key": "legs-b",
+      "name": "Legs B",
+      "warmup": [
+        "Begin with 5 minutes of easy movement.",
+        "Use lighter practice sets for the first demanding lifts; warmup sets are not working sets."
+      ],
+      "exercises": [
+        {
+          "key": "leg-press",
+          "exerciseId": "leg-press",
+          "sets": 3,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 150
+        },
+        {
+          "key": "hip-thrust",
+          "exerciseId": "hip-thrust",
+          "sets": 3,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 150
+        },
+        {
+          "key": "reverse-lunge",
+          "exerciseId": "reverse-lunge",
+          "sets": 2,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 120,
+          "perSide": true
+        },
+        {
+          "key": "leg-curl",
+          "exerciseId": "leg-curl",
+          "sets": 2,
+          "repsMin": 10,
+          "repsMax": 15,
+          "restSeconds": 90
+        },
+        {
+          "key": "calf-raise",
+          "exerciseId": "calf-raise",
+          "sets": 3,
+          "repsMin": 10,
+          "repsMax": 15,
+          "restSeconds": 60
+        },
+        {
+          "key": "plank",
+          "exerciseId": "plank",
+          "sets": 2,
+          "repsMin": 20,
+          "repsMax": 40,
+          "restSeconds": 60,
+          "seconds": true
+        }
+      ]
+    }
+  ]
+}

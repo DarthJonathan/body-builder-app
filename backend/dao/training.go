@@ -38,3 +38,13 @@ type MutationReceipt struct {
 	Revision    int64  `gorm:"not null"`
 	CreatedAt   time.Time
 }
+
+// Shared starter templates are independent from users' private program copies.
+type ProgramTemplate struct {
+	Key        string `gorm:"primaryKey;size:80"`
+	Revision   int64  `gorm:"not null"`
+	Definition JSON   `gorm:"type:jsonb;not null"`
+	UpdatedBy  string `gorm:"type:uuid;not null"`
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+}

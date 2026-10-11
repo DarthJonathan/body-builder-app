@@ -13,3 +13,11 @@ Set effort is `easy | medium | hard | null`, independent of completion. Session 
 AI Q&A and photo estimation return clearly labelled simulated results and require no actual API keys. Meal estimates are drafts, never food entries until explicit save. Admin provider settings configure only provider/model/enabled flags in preview, with no real key input. Live mode uses the implemented Go provider adapters and encrypted settings; fixture behavior remains separate.
 
 Browser tests must exercise the UI, asynchronous errors, persistence, account isolation, both mobile Chromium/WebKit, and responsive geometry. Mock behavior is not verification of real authentication, backend sync, LLM calls, or food-provider availability.
+
+Goal onboarding uses the same `program-expert-v1` ranking and `goal-library-v2` preview/create contract as Go, including shared and private imports, no-match explanations and content-digest validation. Earlier `goal-planner-v1` operations remain supported. Draft questions never save; final creation adds a private program, dated targets, goal history and four-week schedule together. Existing/started days and earlier logs remain protected. Synthetic Apple Health bridges are injected only by browser tests to exercise consent, complete-day validation, activity accounting and equation fallback. They are not real HealthKit reads. See [goal rules and research](../../GOAL_ONBOARDING_PLAN.md).
+
+## Program import and publication
+
+The preview implements the same `importProgram`, `listProgramTemplates`, and admin-only `publishProgram` contract. Imports upsert private keyed records and retain history/calendar references. Shared preview templates persist in `bodybuilder.preview.shared-programs.v1` across preview emails on the same browser; they are distinct from each email's private snapshot. The real implementation persists them in PostgreSQL. Generated examples and Go/TS validators are checked against the catalogue by `npm run test:mock`. See [app import instructions](../../docs/programs/README.md).
+
+`recommendPrograms` and `reviewProgress` are read-only. Mock mode follows the shared policy and account boundaries; see [expert rules](../../docs/EXPERT_SYSTEM.md). Progress suggestions never modify prescriptions or targets.

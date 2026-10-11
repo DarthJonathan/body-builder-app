@@ -1,0 +1,201 @@
+{
+  "schemaVersion": "bodybuilder.program.v1",
+  "key": "bb-dumbbell-3",
+  "version": 1,
+  "name": "3-Day Dumbbell Muscle",
+  "description": "Full-body training using dumbbells and a flat/incline bench. A bench is required for the listed press and supported-row variations.",
+  "experience": [
+    "beginner",
+    "intermediate"
+  ],
+  "goals": [
+    "build-muscle",
+    "maintain",
+    "lose-fat"
+  ],
+  "equipment": "dumbbells",
+  "daysPerWeek": 3,
+  "sessionMinutes": 60,
+  "focus": "balanced",
+  "purpose": "hypertrophy",
+  "reviewedAt": "2026-10-11",
+  "notes": "BodyBuilder-authored starting template for healthy adults. The cited research informs general principles; these exact exercise combinations and starting doses are app policy. Session duration is an estimate. Adapt to individual tolerance and review with an appropriate professional when needed.",
+  "progression": {
+    "method": "double-progression",
+    "instructions": "Choose a load that allows the lower end of the rep range with controlled technique and a few repetitions left. Add repetitions before weight. When every working set reaches the upper end on two exposures, try the smallest available load increase and return to the lower end. For bodyweight or timed holds, add repetitions or seconds within the range before choosing a harder variation.",
+    "stall": "If performance drops for two exposures, keep the load and review technique, sleep and training volume. If still struggling, reduce load by about 5\u201310% or remove one accessory set for a week, then reassess. This is manual guidance, not an automatic load change."
+  },
+  "nutrition": {
+    "proteinPerKg": 1.6,
+    "fatPercent": 25,
+    "instructions": "Calculate personal maintenance calories in Goal or Nutrition Targets. Start with the selected goal adjustment, then review several weeks of logged intake and weight trends. Use the protein and fat defaults below as editable starting points; carbohydrate fills the remaining calories. A training template does not establish personal calorie needs or dietary suitability."
+  },
+  "evidence": [
+    {
+      "title": "ACSM resistance-training position stand (2026)",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12965823/"
+    },
+    {
+      "title": "Morton et al. protein and resistance-training meta-analysis",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5867436/"
+    }
+  ],
+  "workouts": [
+    {
+      "key": "full-a",
+      "name": "Dumbbell Full Body A",
+      "warmup": [
+        "Begin with 5 minutes of easy movement.",
+        "Use lighter practice sets for the first demanding lifts; warmup sets are not working sets."
+      ],
+      "exercises": [
+        {
+          "key": "dumbbell-squat",
+          "exerciseId": "dumbbell-squat",
+          "sets": 3,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 120
+        },
+        {
+          "key": "flat-dumbbell-press",
+          "exerciseId": "flat-dumbbell-press",
+          "sets": 3,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 120
+        },
+        {
+          "key": "one-arm-dumbbell-row",
+          "exerciseId": "one-arm-dumbbell-row",
+          "sets": 3,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 120,
+          "perSide": true
+        },
+        {
+          "key": "dumbbell-rdl",
+          "exerciseId": "dumbbell-rdl",
+          "sets": 3,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 120
+        },
+        {
+          "key": "plank",
+          "exerciseId": "plank",
+          "sets": 2,
+          "repsMin": 20,
+          "repsMax": 40,
+          "restSeconds": 60,
+          "seconds": true
+        }
+      ]
+    },
+    {
+      "key": "full-b",
+      "name": "Dumbbell Full Body B",
+      "warmup": [
+        "Begin with 5 minutes of easy movement.",
+        "Use lighter practice sets for the first demanding lifts; warmup sets are not working sets."
+      ],
+      "exercises": [
+        {
+          "key": "dumbbell-lunge",
+          "exerciseId": "dumbbell-lunge",
+          "sets": 3,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 120,
+          "perSide": true
+        },
+        {
+          "key": "shoulder-press",
+          "exerciseId": "shoulder-press",
+          "sets": 3,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 120
+        },
+        {
+          "key": "supported-row",
+          "exerciseId": "supported-row",
+          "sets": 3,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 120
+        },
+        {
+          "key": "dumbbell-rdl",
+          "exerciseId": "dumbbell-rdl",
+          "sets": 2,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 120
+        },
+        {
+          "key": "dead-bug",
+          "exerciseId": "dead-bug",
+          "sets": 2,
+          "repsMin": 6,
+          "repsMax": 10,
+          "restSeconds": 60,
+          "perSide": true
+        }
+      ]
+    },
+    {
+      "key": "full-c",
+      "name": "Dumbbell Full Body C",
+      "warmup": [
+        "Begin with 5 minutes of easy movement.",
+        "Use lighter practice sets for the first demanding lifts; warmup sets are not working sets."
+      ],
+      "exercises": [
+        {
+          "key": "dumbbell-squat",
+          "exerciseId": "dumbbell-squat",
+          "sets": 3,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 120
+        },
+        {
+          "key": "incline-press",
+          "exerciseId": "incline-press",
+          "sets": 3,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 120
+        },
+        {
+          "key": "one-arm-dumbbell-row",
+          "exerciseId": "one-arm-dumbbell-row",
+          "sets": 3,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 120,
+          "perSide": true
+        },
+        {
+          "key": "dumbbell-lateral-raise",
+          "exerciseId": "dumbbell-lateral-raise",
+          "sets": 2,
+          "repsMin": 12,
+          "repsMax": 20,
+          "restSeconds": 60
+        },
+        {
+          "key": "dead-bug",
+          "exerciseId": "dead-bug",
+          "sets": 2,
+          "repsMin": 6,
+          "repsMax": 10,
+          "restSeconds": 60,
+          "perSide": true
+        }
+      ]
+    }
+  ]
+}

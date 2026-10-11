@@ -1,0 +1,130 @@
+{
+  "schemaVersion": "bodybuilder.program.v1",
+  "key": "bb-quick-dumbbell-2",
+  "version": 1,
+  "name": "2-Day Quick Dumbbell Foundation",
+  "description": "Four movements per session with a small starting dose. Allow extra time when setting up or learning movements.",
+  "experience": [
+    "beginner"
+  ],
+  "goals": [
+    "build-muscle",
+    "maintain",
+    "lose-fat"
+  ],
+  "equipment": "dumbbells",
+  "daysPerWeek": 2,
+  "sessionMinutes": 30,
+  "focus": "balanced",
+  "purpose": "hypertrophy",
+  "reviewedAt": "2026-10-11",
+  "notes": "BodyBuilder-authored starting template for healthy adults. The cited research informs general principles; these exact exercise combinations and starting doses are app policy. Session duration is an estimate. Adapt to individual tolerance and review with an appropriate professional when needed.",
+  "progression": {
+    "method": "double-progression",
+    "instructions": "Choose a load that allows the lower end of the rep range with controlled technique and a few repetitions left. Add repetitions before weight. When every working set reaches the upper end on two exposures, try the smallest available load increase and return to the lower end. For bodyweight or timed holds, add repetitions or seconds within the range before choosing a harder variation.",
+    "stall": "If performance drops for two exposures, keep the load and review technique, sleep and training volume. If still struggling, reduce load by about 5\u201310% or remove one accessory set for a week, then reassess. This is manual guidance, not an automatic load change."
+  },
+  "nutrition": {
+    "proteinPerKg": 1.6,
+    "fatPercent": 25,
+    "instructions": "Calculate personal maintenance calories in Goal or Nutrition Targets. Start with the selected goal adjustment, then review several weeks of logged intake and weight trends. Use the protein and fat defaults below as editable starting points; carbohydrate fills the remaining calories. A training template does not establish personal calorie needs or dietary suitability."
+  },
+  "evidence": [
+    {
+      "title": "ACSM resistance-training position stand (2026)",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12965823/"
+    },
+    {
+      "title": "Morton et al. protein and resistance-training meta-analysis",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5867436/"
+    }
+  ],
+  "workouts": [
+    {
+      "key": "full-a",
+      "name": "Quick Full Body A",
+      "warmup": [
+        "Begin with 5 minutes of easy movement.",
+        "Use lighter practice sets for the first demanding lifts; warmup sets are not working sets."
+      ],
+      "exercises": [
+        {
+          "key": "dumbbell-squat",
+          "exerciseId": "dumbbell-squat",
+          "sets": 2,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 120
+        },
+        {
+          "key": "flat-dumbbell-press",
+          "exerciseId": "flat-dumbbell-press",
+          "sets": 2,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 120
+        },
+        {
+          "key": "one-arm-dumbbell-row",
+          "exerciseId": "one-arm-dumbbell-row",
+          "sets": 2,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 90,
+          "perSide": true
+        },
+        {
+          "key": "dumbbell-rdl",
+          "exerciseId": "dumbbell-rdl",
+          "sets": 2,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 120
+        }
+      ]
+    },
+    {
+      "key": "full-b",
+      "name": "Quick Full Body B",
+      "warmup": [
+        "Begin with 5 minutes of easy movement.",
+        "Use lighter practice sets for the first demanding lifts; warmup sets are not working sets."
+      ],
+      "exercises": [
+        {
+          "key": "dumbbell-lunge",
+          "exerciseId": "dumbbell-lunge",
+          "sets": 2,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 90,
+          "perSide": true
+        },
+        {
+          "key": "shoulder-press",
+          "exerciseId": "shoulder-press",
+          "sets": 2,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 120
+        },
+        {
+          "key": "supported-row",
+          "exerciseId": "supported-row",
+          "sets": 2,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 120
+        },
+        {
+          "key": "dumbbell-rdl",
+          "exerciseId": "dumbbell-rdl",
+          "sets": 2,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 120
+        }
+      ]
+    }
+  ]
+}

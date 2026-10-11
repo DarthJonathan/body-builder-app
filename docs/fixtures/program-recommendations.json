@@ -1,0 +1,115 @@
+{
+  "version": "program-expert-v1",
+  "digests": {
+    "bb-foundation-2": "097a43ff1d9dabe8ff4b3e6621121e630e01f99cae3702a8b9ae8783e06d791f",
+    "bb-foundation-3": "766b9fe445921d48926b16a13bc3e6da08100377fcb51e20ff225a1350238717",
+    "bb-full-body-3": "65c57b9429e42421bc38b6c6efb23ec6e30350a6234adc04a9599d0c1cf9f595",
+    "bb-upper-lower-4": "fa9d4d7ad0d2a35ab2a0ce5c40ae84bcf3fffae84cbeedabf7706401d893cc68",
+    "bb-upper-lower-strength-4": "d9e6fcbbc11b5366380c9eac86f92f1583974706d5161df40ea39ce14eeed47c",
+    "bb-hybrid-5": "6d2175ae88fd6ef6fe83e1fdbf3c5f6ca57a3c381c7d41d113d7503a360e2c82",
+    "bb-ppl-6": "00cfb48101945225067542471b72a0f30696e682fb144702196d8bdd17a6d015",
+    "bb-dumbbell-3": "ca62653fd3667e6647d9f9ede909fe5bfc0ab2319d3fd571a8f36ca2a5b9a112",
+    "bb-glute-3": "d6cd6554167746d21ea487388983de81a5cc393f5f50ed1198f07439becf0ffa",
+    "bb-quick-dumbbell-2": "3ecd0c2c4165d9dfc4d442b65bf834884f029d2e07098bb7728ce24e30eb6bd9"
+  },
+  "cases": [
+    {
+      "name": "beginner foundation",
+      "input": {
+        "goal": "build-muscle",
+        "experience": "beginner",
+        "equipment": "full-gym",
+        "daysPerWeek": 3,
+        "sessionMinutes": 45,
+        "focus": "balanced",
+        "trainingPriority": "hypertrophy"
+      },
+      "topId": "bb-foundation-3",
+      "score": 100
+    },
+    {
+      "name": "intermediate hypertrophy",
+      "input": {
+        "goal": "build-muscle",
+        "experience": "intermediate",
+        "equipment": "full-gym",
+        "daysPerWeek": 4,
+        "sessionMinutes": 60,
+        "focus": "balanced",
+        "trainingPriority": "hypertrophy"
+      },
+      "topId": "bb-upper-lower-4",
+      "score": 100
+    },
+    {
+      "name": "main lift strength",
+      "input": {
+        "goal": "build-muscle",
+        "experience": "intermediate",
+        "equipment": "full-gym",
+        "daysPerWeek": 4,
+        "sessionMinutes": 60,
+        "focus": "balanced",
+        "trainingPriority": "strength"
+      },
+      "topId": "bb-upper-lower-strength-4",
+      "score": 100
+    },
+    {
+      "name": "glute emphasis",
+      "input": {
+        "goal": "build-muscle",
+        "experience": "intermediate",
+        "equipment": "full-gym",
+        "daysPerWeek": 3,
+        "sessionMinutes": 60,
+        "focus": "glutes",
+        "trainingPriority": "hypertrophy"
+      },
+      "topId": "bb-glute-3",
+      "score": 100
+    },
+    {
+      "name": "no eligible six day quick beginner",
+      "input": {
+        "goal": "build-muscle",
+        "experience": "beginner",
+        "equipment": "full-gym",
+        "daysPerWeek": 6,
+        "sessionMinutes": 30,
+        "focus": "balanced",
+        "trainingPriority": "hypertrophy"
+      },
+      "topId": null,
+      "score": 0
+    },
+    {
+      "name": "two day quick dumbbells",
+      "input": {
+        "goal": "build-muscle",
+        "experience": "beginner",
+        "equipment": "dumbbells",
+        "daysPerWeek": 2,
+        "sessionMinutes": 30,
+        "focus": "balanced",
+        "trainingPriority": "hypertrophy"
+      },
+      "topId": "bb-quick-dumbbell-2",
+      "score": 100
+    },
+    {
+      "name": "three day dumbbells",
+      "input": {
+        "goal": "build-muscle",
+        "experience": "beginner",
+        "equipment": "dumbbells",
+        "daysPerWeek": 3,
+        "sessionMinutes": 60,
+        "focus": "balanced",
+        "trainingPriority": "hypertrophy"
+      },
+      "topId": "bb-dumbbell-3",
+      "score": 100
+    }
+  ]
+}

@@ -11,12 +11,14 @@
     "generate:icons": "node scripts/generate-icons.mjs",
     "test:mock": "node scripts/test-mock-api.mjs",
     "test:nutrition": "node scripts/test-nutrition.mjs",
+    "test:goals": "node scripts/test-goals.mjs",
     "test:ui": "playwright test",
     "test:ui:production": "PW_PREVIEW=1 playwright test",
     "test:live": "playwright test --config playwright.live.config.ts",
     "test:live:production": "PW_PREVIEW=1 playwright test --config playwright.live.config.ts",
     "export:catalogue": "node scripts/export-server-catalogue.mjs",
-    "generate:art": "node scripts/generate-preview-art.mjs"
+    "generate:art": "node scripts/generate-preview-art.mjs",
+    "test:expert": "node scripts/test-expert.mjs"
   },
   "dependencies": {
     "@vite-pwa/sveltekit": "1.1.0",

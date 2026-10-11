@@ -1,4 +1,6 @@
-import { exercises, foods, templates } from '../catalogue';
+import { exercises, muscles, foods, templates } from '../catalogue';
+import { applyProgramImport, documentFromProgram, sameProgramDocument, templateFromDocument, validateProgramDocument } from '../program-documents';
+import type { ProgramTemplate } from '../domain';
 import type { AppSnapshot, MealEstimate, Program, TrainingClient, Workout, WorkoutSession } from '../domain';
 import { id, sumNutrients } from '../domain';
 import { calculateNutritionTargets, sameCalculationProvenance } from '../nutrition';
@@ -9,6 +11,10 @@ import {
   setActiveEmail, writeSnapshot
 } from './storage';
 import * as validate from './validation';
+import { previewGoal, applyGoalCreation, validateGoalAnswers } from '../goals';
+import { recommendPrograms, previewExpertGoal, EXPERT_GOAL_VERSION } from '../expert';
+import { reviewProgress } from '../progress-review';
+import { validateHealthEnergy } from '../health';
 
 function allWorkouts(data: AppSnapshot): Workout[] {
   return data.programs.flatMap(program => program.workouts);
@@ -87,14 +93,23 @@ function privateTemplate(template: Program): Program {
       };
     })
   };
+  if(template.details) copy.details={...clone(template.details),key:`copy-${copy.id}`};
   return copy;
+}
+
+const SHARED_PROGRAMS='bodybuilder.preview.shared-programs.v1';
+function previewTemplates(): ProgramTemplate[] {
+  const saved=JSON.parse(window.localStorage.getItem(SHARED_PROGRAMS) ?? '[]') as ProgramTemplate[];
+  const result=clone(templates);
+  for(const template of saved) {const at=result.findIndex(t=>t.id===template.id);if(at<0)result.push(template);else result[at]=template;}
+  return result;
 }
 
 export function createMockClient(): TrainingClient {
   // Mutations are serialized so two simultaneous saves cannot overwrite each other.
   let pending: Promise<unknown> = Promise.resolve();
 
-  function request<T>(operation: string, handler: (email: string) => T, authenticated = true): Promise<T> {
+  function request<T>(operation: string, handler: (email: string) => T | Promise<T>, authenticated = true): Promise<T> {
     let capturedEmail: string | null = null;
     let captureError: unknown;
     try { if (authenticated) capturedEmail = activeEmail(); } catch (error) { captureError = error; }
@@ -105,17 +120,20 @@ export function createMockClient(): TrainingClient {
         if (!capturedEmail) throw new MockApiError('Sign in to your local preview to continue.', 401, 'not_signed_in');
         if (activeEmail() !== capturedEmail) throw new MockApiError('Your preview account changed. Open the record in the current account and try again.', 409, 'account_changed');
       }
-      return clone(handler(capturedEmail ?? ''));
+      const value = await handler(capturedEmail ?? '');
+      if(authenticated && activeEmail()!==capturedEmail) throw new MockApiError('Your preview account changed. Try again.',409,'account_changed');
+      return clone(value);
     };
     const result = pending.then(run, run);
     pending = result.then(() => undefined, () => undefined);
     return result;
   }
 
-  function mutate(operation: string, handler: (data: AppSnapshot) => void): Promise<AppSnapshot> {
-    return request(operation, email => {
+  function mutate(operation: string, handler: (data: AppSnapshot) => void | Promise<void>): Promise<AppSnapshot> {
+    return request(operation, async email => {
       const data = ensureSnapshot(email);
-      handler(data);
+      await handler(data);
+      if(activeEmail()!==email) throw new MockApiError('Your preview account changed. Try again.',409,'account_changed');
       writeSnapshot(email, data);
       return data;
     });
@@ -174,6 +192,7 @@ export function createMockClient(): TrainingClient {
     saveProgram(program) {
       return mutate('saveProgram', data => {
         validate.program(program); ensureKnownExercises(program);
+        if(program.details && data.programs.some(p=>p.id!==program.id && p.details?.key===program.details!.key)) invalid('A program key already belongs to another private program.');
         const otherWorkouts = data.programs.filter(item => item.id !== program.id).flatMap(item => item.workouts);
         if (program.workouts.some(workout => otherWorkouts.some(other => other.id === workout.id))) {
           invalid('A workout ID belongs to another program. Copy the template before editing it.');
@@ -182,11 +201,33 @@ export function createMockClient(): TrainingClient {
         data.activeProgramId = program.id;
       });
     },
+    importProgram(document) { return mutate('importProgram',data=>applyProgramImport(data,document,exercises,muscles)); },
+    listProgramTemplates() { return request('listProgramTemplates',()=>previewTemplates()); },
+    publishProgram(document,baseRevision) { return request('publishProgram',email=>{
+      if(ensureSnapshot(email).profile.role!=='admin') throw new MockApiError('Only an administrator can publish shared programs.',403,'admin_required');
+      validateProgramDocument(document,new Set(exercises.map(e=>e.id)));
+      const existing=previewTemplates().find(t=>t.id===document.key);
+      if(existing?.revision && existing.details && sameProgramDocument(documentFromProgram(existing),document)) return existing;
+      if((existing?.revision ?? 0)!==baseRevision) throw new MockApiError('Another administrator updated this template. Reload the library before publishing.',409,'library_revision_conflict');
+      if(existing && !existing.details) invalid('Use a new key for a source-based legacy template.');
+      if(existing?.details && !sameProgramDocument(documentFromProgram(existing),document) && document.version<=existing.details.version) throw new MockApiError('Increase the document version before updating this template.',409,'program_version_conflict');
+      const result=templateFromDocument(document,exercises,muscles,(existing?.revision ?? 0)+1);
+      const saved=JSON.parse(window.localStorage.getItem(SHARED_PROGRAMS) ?? '[]') as ProgramTemplate[];
+      if(!saved.some(p=>p.id===document.key) && saved.length>=200) invalid('The shared library already has 200 published templates.');
+      upsert(saved,result);window.localStorage.setItem(SHARED_PROGRAMS,JSON.stringify(saved));return result;
+    }); },
 
+    recommendPrograms(input) { return request('recommendPrograms', email => recommendPrograms(input,previewTemplates(),ensureSnapshot(email).programs)); },
+    reviewProgress() { return request('reviewProgress', email => reviewProgress(ensureSnapshot(email),previewToday())); },
+    previewGoalPlan(input) { return request('previewGoalPlan', email => {
+      const data = ensureSnapshot(email); validateGoalAnswers(input); if(input.trainingPriority) return previewExpertGoal(input,previewTemplates(),data); return previewGoal(input, data.programs.find(p=>p.id===data.activeProgramId));
+    }); },
+    createGoalPlan(input) { return mutate('createGoalPlan', async data => { const preview=input.version===EXPERT_GOAL_VERSION ? await previewExpertGoal(input.answers,previewTemplates(),data) : undefined; applyGoalCreation(data,input,previewToday(),preview); }); },
+    saveHealthEnergy(energy) { return mutate('saveHealthEnergy', data => { if (energy) validateHealthEnergy(energy); data.healthEnergy=energy ? clone(energy) : undefined; }); },
     useTemplate(templateId) {
       return mutate('useTemplate', data => {
         validate.identifier(templateId, 'Template ID');
-        const template = templates.find(item => item.id === templateId);
+        const template = previewTemplates().find(item => item.id === templateId);
         if (!template) missing('That starter program is not available in the preview.');
         const program = privateTemplate(template);
         validate.program(program); ensureKnownExercises(program);

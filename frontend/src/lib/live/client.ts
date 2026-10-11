@@ -6,6 +6,12 @@ import { calculateNutritionTargets, sameCalculationProvenance } from '../nutriti
 import * as validate from '../mock/validation';
 import { clone, readAccount, readSession, SESSION_KEY, updateAccount, writeSession, type AccountCache, type Operation } from './storage';
 import { project } from './projection';
+import { previewGoal, validateGoalCreation, validateGoalAnswers } from '../goals';
+import { EXPERT_GOAL_VERSION, validateTrainingPreferences } from '../expert';
+import { validateHealthEnergy } from '../health';
+import { exercises } from '../catalogue';
+import { validateProgramDocument } from '../program-documents';
+import type { ProgramTemplate } from '../domain';
 
 export const syncState = writable<SyncState>({ phase: 'signed-out', pending: 0, revision: 0, message: '', operations: [] });
 
@@ -30,6 +36,7 @@ export function createLiveClient(): TrainingClient {
   let session: Session | null = null;
   let account: AccountCache | null = null;
   let epoch = 0;
+  let expertPreview: {epoch:number;value:import('../domain').GoalPreview} | null=null;
   let initialized = false;
   let editing = false;
   let sequence: Promise<unknown> = Promise.resolve();
@@ -230,6 +237,39 @@ export function createLiveClient(): TrainingClient {
     resetPreview: async () => { throw new Error('Reset Preview Data is only available in explicit preview mode.'); },
     updateProfile: patch => { validateProfile(patch); return mutate('updateProfile', patch); },
     saveProgram: program => { validate.program(program); return mutate('saveProgram', program); },
+    importProgram: document => {validateProgramDocument(document,new Set(exercises.map(e=>e.id)));return mutate('importProgram',{document});},
+    listProgramTemplates: () => authorized<ProgramTemplate[]>('programs/templates'),
+    publishProgram: (document,baseRevision) => serial(async()=>{
+      const context=authenticate();
+      if(account?.view.profile.role!=='admin') throw new APIError('Only an administrator can publish shared programs.',403);
+      validateProgramDocument(document,new Set(exercises.map(e=>e.id)));
+      return authorized<ProgramTemplate>('admin/programs',{method:'PUT',body:JSON.stringify({document,baseRevision})},context);
+    }),
+    recommendPrograms: input => {validateTrainingPreferences(input);return authorized('programs/recommendations',{method:'POST',body:JSON.stringify(input)});},
+    reviewProgress: () => authorized('progress/review'),
+    previewGoalPlan: async input => {
+      if(input.trainingPriority) {
+        validateGoalAnswers(input);const requestedEpoch=epoch;
+        const remote=await authorized<import('../domain').GoalPreview>('goals/preview',{method:'POST',body:JSON.stringify(input)});
+        if(remote.version!==EXPERT_GOAL_VERSION || remote.expertVersion!=='program-expert-v1')throw new APIError('Reload to use the current recommendation rules.',502,'invalid_goal_preview');
+        if(epoch===requestedEpoch)expertPreview={epoch:requestedEpoch,value:clone(remote)};return remote;
+      }
+      const local = previewGoal(input, account?.view.programs.find(p=>p.id===account?.view.activeProgramId));
+      try {
+        const remote = await authorized<import('../domain').GoalPreview>('goals/preview', { method:'POST', body:JSON.stringify(input) });
+        if (JSON.stringify(remote) !== JSON.stringify(local)) {
+          // JSON object ordering differs in Go; compare the meaningful records instead.
+          if (remote.version !== local.version || !sameCalculationProvenance(remote.targets.calculation, local.targets.calculation) || JSON.stringify(remote.program.workouts.map(w=>w.exercises.map(p=>[p.exerciseId,p.sets,p.repsMin,p.repsMax]))) !== JSON.stringify(local.program.workouts.map(w=>w.exercises.map(p=>[p.exerciseId,p.sets,p.repsMin,p.repsMax])))) throw new APIError('Goal rules changed. Reload and preview again.',502,'invalid_goal_preview');
+        }
+        return remote;
+      } catch(error) { if (!(error instanceof APIError) || error.status !== 0) throw error; return local; }
+    },
+    createGoalPlan: input => {
+      validateGoalCreation(input, account?.view.programs.find(p=>p.id===account?.view.activeProgramId),expertPreview?.epoch===epoch ? expertPreview.value : undefined);
+      if (account?.outbox.some(m=>m.operation==='createGoalPlan')) throw new Error('A goal plan is already waiting to sync. Resolve it before creating another.');
+      return mutate('createGoalPlan', input);
+    },
+    saveHealthEnergy: energy => { if (energy) validateHealthEnergy(energy); return mutate('saveHealthEnergy', {energy}); },
     useTemplate: templateId => { validate.identifier(templateId, 'Template ID'); return mutate('useTemplate', { templateId }); },
     assignWorkout: (date, workoutId) => {
       validate.date(date); if (workoutId !== null) validate.identifier(workoutId, 'Workout ID');

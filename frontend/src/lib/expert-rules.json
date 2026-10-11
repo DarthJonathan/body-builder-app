@@ -1,0 +1,17 @@
+{
+  "version": "program-expert-v1",
+  "reviewVersion": "progress-review-v1",
+  "reviewedAt": "2026-10-11",
+  "weights": { "experience": 40, "focus": 25, "purpose": 25, "time": 10 },
+  "dumbbellEquipment": ["Dumbbells", "Dumbbell or kettlebell", "Dumbbells and incline bench", "Bodyweight", "Bodyweight and bench"],
+  "progress": { "windowDays": 28, "increaseExposures": 2, "stallExposures": 3, "increasePercent": 2.5 },
+  "nutrition": { "windowDays": 14, "weightsPerWeek": 3, "loggedDays": 10, "minimumMeals": 2, "maximumWeeklyChangePercent": 3 },
+  "sources": [
+    { "name": "ACSM 2026 resistance-training guidance", "url": "https://pubmed.ncbi.nlm.nih.gov/41843416/" },
+    { "name": "ACSM progression guidance", "url": "https://pubmed.ncbi.nlm.nih.gov/19204579/" },
+    { "name": "Protein: Morton et al. (2018)", "url": "https://pubmed.ncbi.nlm.nih.gov/28698222/" },
+    { "name": "Energy surpluses: Helms et al. (2023)", "url": "https://pubmed.ncbi.nlm.nih.gov/37914977/" }
+  ],
+  "matchingPolicy": "Eligibility checks days, equipment, time, supported goal and starting experience. The 0–100 score ranks experience (40), focus (25), training priority (25) and time fit (10). These are BodyBuilder preference rules, not a probability of success or a medical assessment. Exact prescriptions are preserved; session times are estimates declared by the plan author.",
+  "reviewPolicy": "Suggestions use recorded observations and conservative BodyBuilder thresholds. Easy/medium/hard are self-reported labels, not RPE or reps in reserve. Food entries cannot establish whether a whole day was logged. Review technique, recovery and data quality before changing loads or targets; nothing changes automatically."
+}

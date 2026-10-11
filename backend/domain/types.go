@@ -42,6 +42,7 @@ type Exercise struct {
 }
 type Prescription struct {
 	ID          string `json:"id"`
+	Key         string `json:"key,omitempty"`
 	ExerciseID  string `json:"exerciseId"`
 	Sets        int    `json:"sets"`
 	RepsMin     int    `json:"repsMin"`
@@ -54,27 +55,30 @@ type Prescription struct {
 }
 type Workout struct {
 	ID        string         `json:"id"`
+	Key       string         `json:"key,omitempty"`
 	Name      string         `json:"name"`
 	Muscles   []Muscle       `json:"muscles"`
 	Exercises []Prescription `json:"exercises"`
 	Warmup    []string       `json:"warmup"`
 }
 type Program struct {
-	ID               string    `json:"id"`
-	Name             string    `json:"name"`
-	Level            string    `json:"level"`
-	Goal             string    `json:"goal"`
-	Workouts         []Workout `json:"workouts"`
-	Source           string    `json:"source,omitempty"`
-	SourceName       string    `json:"sourceName,omitempty"`
-	SourceReviewedAt string    `json:"sourceReviewedAt,omitempty"`
-	AdaptationNote   string    `json:"adaptationNote,omitempty"`
+	ID               string           `json:"id"`
+	Name             string           `json:"name"`
+	Level            string           `json:"level"`
+	Goal             string           `json:"goal"`
+	Workouts         []Workout        `json:"workouts"`
+	Source           string           `json:"source,omitempty"`
+	SourceName       string           `json:"sourceName,omitempty"`
+	SourceReviewedAt string           `json:"sourceReviewedAt,omitempty"`
+	AdaptationNote   string           `json:"adaptationNote,omitempty"`
+	Details          *ProgramMetadata `json:"details,omitempty"`
 }
 type ProgramTemplate struct {
 	Program
 	Description string `json:"description"`
 	DaysPerWeek int    `json:"daysPerWeek"`
 	Equipment   string `json:"equipment"`
+	Revision    int64  `json:"revision,omitempty"`
 }
 type ScheduleEntry struct {
 	ID        string  `json:"id"`
@@ -135,16 +139,17 @@ type NutritionTargets struct {
 }
 
 type TargetCalculation struct {
-	Age               int     `json:"age"`
-	Sex               string  `json:"sex"`
-	HeightCM          float64 `json:"heightCm"`
-	WeightKG          float64 `json:"weightKg"`
-	Activity          string  `json:"activity"`
-	Goal              string  `json:"goal"`
-	EffectiveDate     string  `json:"effectiveDate"`
-	CalorieAdjustment float64 `json:"calorieAdjustment"`
-	ProteinPerKG      float64 `json:"proteinPerKg"`
-	FatPercent        float64 `json:"fatPercent"`
+	Age               int           `json:"age"`
+	Sex               string        `json:"sex"`
+	HeightCM          float64       `json:"heightCm"`
+	WeightKG          float64       `json:"weightKg"`
+	Activity          string        `json:"activity"`
+	Goal              string        `json:"goal"`
+	EffectiveDate     string        `json:"effectiveDate"`
+	CalorieAdjustment float64       `json:"calorieAdjustment"`
+	ProteinPerKG      float64       `json:"proteinPerKg"`
+	FatPercent        float64       `json:"fatPercent"`
+	HealthEnergy      *HealthEnergy `json:"healthEnergy,omitempty"`
 }
 
 type NutritionCalculation struct {
@@ -205,6 +210,8 @@ type AppSnapshot struct {
 	Weights         []WeightEntry      `json:"weights"`
 	Lessons         []Lesson           `json:"lessons"`
 	Provider        ProviderConfig     `json:"provider"`
+	GoalPlans       []GoalPlan         `json:"goalPlans,omitempty"`
+	HealthEnergy    *HealthEnergy      `json:"healthEnergy,omitempty"`
 }
 type Mutation struct {
 	ID           string          `json:"id"`

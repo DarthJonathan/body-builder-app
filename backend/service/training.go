@@ -139,7 +139,9 @@ func (s *TrainingService) Mutate(ctx context.Context, userID string, mutation do
 		if doc.Revision != mutation.BaseRevision {
 			return &TrainingError{Status: 409, Code: "revision_conflict", Message: "another device changed this account; review your pending changes before syncing", Snapshot: &result}
 		}
-		if err := s.apply(&state, mutation.Operation, mutation.Payload); err != nil {
+		transactionService := *s
+		transactionService.DB = tx
+		if err := transactionService.apply(&state, mutation.Operation, mutation.Payload); err != nil {
 			return err
 		}
 		if len(state.Programs) > 100 || len(state.Schedule) > 5000 || len(state.Sessions) > 5000 || len(state.FoodEntries) > 20000 || len(state.Lessons) > 5000 || len(state.CheckIns) > 5000 || len(state.Targets) > 5000 || len(state.Weights) > 5000 {

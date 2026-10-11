@@ -1,0 +1,140 @@
+{
+  "version": "goal-planner-v1",
+  "cases": [
+    {
+      "name": "three-day glute emphasis with a short time budget",
+      "answers": {
+        "goal": "build-muscle",
+        "startDate": "2026-10-09",
+        "experience": "intermediate",
+        "restrictions": "none",
+        "equipment": "full-gym",
+        "daysPerWeek": 3,
+        "sessionMinutes": 30,
+        "focus": "glutes",
+        "split": "full-body",
+        "workoutDays": [
+          0,
+          2,
+          4
+        ],
+        "nutritionExperience": "new",
+        "pace": "gentle",
+        "nutrition": {
+          "age": 30,
+          "sex": "male",
+          "heightCm": 175,
+          "weightKg": 70,
+          "activity": "moderate",
+          "goal": "build-muscle",
+          "effectiveDate": "2026-10-09",
+          "calorieAdjustment": 150,
+          "proteinPerKg": 1.6,
+          "fatPercent": 25
+        }
+      },
+      "expected": {
+        "exercises": [
+          [
+            "hip-thrust",
+            "squat",
+            "bench-press",
+            "barbell-row"
+          ],
+          [
+            "hip-thrust",
+            "leg-press",
+            "incline-press",
+            "lat-pulldown"
+          ],
+          [
+            "hip-thrust",
+            "reverse-lunge",
+            "shoulder-press",
+            "cable-row"
+          ]
+        ],
+        "sets": 3,
+        "calories": 2710,
+        "protein": 112,
+        "carbs": 397,
+        "fat": 75,
+        "restingCalories": 1649,
+        "maintenanceCalories": 2556
+      }
+    },
+    {
+      "name": "four-day beginner dumbbells with a gentle deficit",
+      "answers": {
+        "goal": "lose-fat",
+        "startDate": "2026-10-09",
+        "experience": "beginner",
+        "restrictions": "none",
+        "equipment": "dumbbells",
+        "daysPerWeek": 4,
+        "sessionMinutes": 45,
+        "focus": "balanced",
+        "split": "upper-lower",
+        "workoutDays": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "nutritionExperience": "new",
+        "pace": "gentle",
+        "nutrition": {
+          "age": 32,
+          "sex": "female",
+          "heightCm": 165,
+          "weightKg": 60,
+          "activity": "light",
+          "goal": "lose-fat",
+          "effectiveDate": "2026-10-09",
+          "calorieAdjustment": -200,
+          "proteinPerKg": 1.6,
+          "fatPercent": 25
+        }
+      },
+      "expected": {
+        "exercises": [
+          [
+            "flat-dumbbell-press",
+            "one-arm-dumbbell-row",
+            "standing-dumbbell-press",
+            "dumbbell-lateral-raise",
+            "hammer-curl"
+          ],
+          [
+            "dumbbell-squat",
+            "dumbbell-rdl",
+            "dumbbell-lunge",
+            "glute-bridge",
+            "dead-bug"
+          ],
+          [
+            "incline-press",
+            "dumbbell-row",
+            "dumbbell-fly",
+            "dumbbell-rear-delt-fly",
+            "dumbbell-curl"
+          ],
+          [
+            "goblet-squat",
+            "dumbbell-rdl",
+            "glute-bridge",
+            "dumbbell-lunge",
+            "crunch"
+          ]
+        ],
+        "sets": 2,
+        "calories": 1600,
+        "protein": 96,
+        "carbs": 205,
+        "fat": 44,
+        "restingCalories": 1310,
+        "maintenanceCalories": 1802
+      }
+    }
+  ]
+}

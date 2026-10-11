@@ -170,10 +170,10 @@ export function targets(value: unknown, requireCalculatedMetadata = false): asse
     return;
   }
   const calculation = record(data.calculation, 'Target calculation');
-  if (calculation.version !== CALCULATION_VERSION) invalid('The calculation version is unsupported.');
   let expected: NutritionTargets;
   try { validateTargetCalculation(calculation.input); expected = calculateNutritionTargets(calculation.input, data.id as string); }
   catch (error) { invalid(error instanceof Error ? error.message : 'Calculation inputs are invalid.'); }
+  if (calculation.version !== expected!.calculation!.version) invalid('The calculation version is unsupported.');
   if (calculation.restingCalories !== expected!.calculation!.restingCalories || calculation.maintenanceCalories !== expected!.calculation!.maintenanceCalories) invalid('Calculation provenance does not match its inputs.');
   if (data.mode === 'calculated') {
     if (data.effectiveDate !== expected!.effectiveDate || (['calories', 'protein', 'carbs', 'fat'] as const).some(key => data[key] !== expected![key])) invalid('Calculated targets do not match their inputs. Calculate them again.');

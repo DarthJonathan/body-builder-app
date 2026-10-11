@@ -14,15 +14,29 @@ export type Exercise = {
   instructions: string[]; source?: string; sourceName?: string; sourceNote?: string; weighted: boolean;
 };
 export type Prescription = {
-  id: string; exerciseId: string; sets: number; repsMin: number; repsMax: number;
+  id: string; key?: string; exerciseId: string; sets: number; repsMin: number; repsMax: number;
   perSide?: boolean; seconds?: boolean; amrapLast?: boolean; restSeconds: number; superset?: string;
 };
-export type Workout = { id: string; name: string; muscles: Muscle[]; exercises: Prescription[]; warmup: string[] };
+export type Workout = { id: string; key?: string; name: string; muscles: Muscle[]; exercises: Prescription[]; warmup: string[] };
+export type ProgramMetadata = {
+  key: string; version: number; name: string; description: string;
+  experience: ('beginner' | 'intermediate' | 'advanced')[]; goals: Goal[];
+  equipment: 'full-gym' | 'dumbbells'; daysPerWeek: number; sessionMinutes: number;
+  focus: 'balanced' | 'glutes'; purpose: 'hypertrophy' | 'strength' | 'general';
+  reviewedAt: string; notes: string;
+  progression: { method: 'double-progression' | 'linear-progression' | 'manual'; instructions: string; stall: string };
+  nutrition: { proteinPerKg: number; fatPercent: number; instructions: string };
+  evidence: { title: string; url: string }[];
+};
+export type ProgramDocument = ProgramMetadata & {
+  schemaVersion: 'bodybuilder.program.v1';
+  workouts: { key: string; name: string; warmup: string[]; exercises: (Omit<Prescription, 'id' | 'key'> & { key: string })[] }[];
+};
 export type Program = {
   id: string; name: string; level: string; goal: Goal; workouts: Workout[]; source?: string;
-  sourceName?: string; sourceReviewedAt?: string; adaptationNote?: string;
+  sourceName?: string; sourceReviewedAt?: string; adaptationNote?: string; details?: ProgramMetadata;
 };
-export type ProgramTemplate = Program & { description: string; daysPerWeek: number; equipment: string; source: string };
+export type ProgramTemplate = Program & { description: string; daysPerWeek: number; equipment: string; source: string; revision?: number };
 export type ScheduleEntry = { id: string; date: string; workoutId: string | null };
 export type LoggedSet = { id: string; weight: number; reps: number; effort: Effort; completed: boolean };
 export type SessionExercise = { id: string; exerciseId: string; prescription: Prescription; notes: string; sets: LoggedSet[] };
@@ -40,7 +54,7 @@ export type FoodEntry = Nutrients & {
 export type NutritionTargets = Nutrients & {
   id: string; effectiveDate: string; mode: 'manual' | 'calculated'; manuallyOverridden: boolean;
   calculation?: {
-    version: 'mifflin-st-jeor-v1'; input: TargetCalculation;
+    version: 'mifflin-st-jeor-v1' | 'apple-health-energy-v1'; input: TargetCalculation;
     restingCalories: number; maintenanceCalories: number;
   };
 };
@@ -64,7 +78,30 @@ export type TargetCalculation = {
   activity: 'sedentary' | 'light' | 'moderate' | 'active' | 'very-active';
   goal: Goal; effectiveDate: string;
   calorieAdjustment: number; proteinPerKg: number; fatPercent: number;
+  healthEnergy?: HealthEnergy;
 };
+export type HealthEnergyDay = { date: string; restingCalories: number; activeCalories: number; coverageHours: number; dayHours: number };
+/** Completed days only; permission success alone never establishes read access. */
+export type HealthEnergy = { source: 'apple-health'; syncedAt: string; timezone: string; sources: string[]; days: HealthEnergyDay[] };
+export type GoalAnswers = {
+  goal: Goal; startDate: string; experience: 'beginner' | 'intermediate' | 'advanced';
+  restrictions: 'none' | 'keep-current'; equipment: 'full-gym' | 'dumbbells';
+  daysPerWeek: number; sessionMinutes: 30 | 45 | 60; focus: 'balanced' | 'glutes';
+  split: 'full-body' | 'upper-lower' | 'hybrid' | 'ppl'; workoutDays: number[];
+  nutritionExperience: 'new' | 'familiar' | 'confident'; pace: 'gentle' | 'moderate';
+  nutrition: TargetCalculation;
+  trainingPriority?: 'hypertrophy' | 'strength' | 'general';
+  programSelection?: ProgramSelection;
+};
+export type ProgramSelection = { scope: 'shared' | 'personal' | 'current'; id: string; version: number; revision: number; digest: string };
+export type TrainingPreferences = Pick<GoalAnswers, 'goal' | 'experience' | 'equipment' | 'daysPerWeek' | 'sessionMinutes' | 'focus'> & { trainingPriority: NonNullable<GoalAnswers['trainingPriority']> };
+export type ProgramMatch = { selection: ProgramSelection; program: Program; score: number; reasons: string[]; differences: string[] };
+export type ProgramRecommendations = { version: 'program-expert-v1'; matches: ProgramMatch[]; excluded: { id: string; name: string; scope: 'shared' | 'personal'; reasons: string[] }[]; explanation: string; policy: string; sources: { name: string; url: string }[] };
+export type GoalPreview = { version: 'goal-planner-v1' | 'goal-library-v2'; program: Program; targets: NutritionTargets; rationale: string[]; selection?: ProgramSelection; expertVersion?: string };
+export type CreateGoalPlan = { version: GoalPreview['version']; answers: GoalAnswers; targets: NutritionTargets; schedulePolicy: 'keep-existing' | 'replace-upcoming' };
+export type GoalPlan = CreateGoalPlan & { id: string; createdAt: string; programId: string; rationale: string[] };
+export type TrainingSuggestion = { workoutId: string; prescriptionId: string; exerciseId: string; name: string; kind: 'increase-load' | 'review-stall'; message: string; evidence: string[]; dates: string[]; observedLoadKg: number; suggestedLoadKg?: number };
+export type ProgressReview = { version: 'progress-review-v1'; asOf: string; programId: string; programName: string; training: TrainingSuggestion[]; trainingSummary: string; nutrition: { status: 'insufficient-data' | 'manual-targets' | 'on-track' | 'review-trend'; message: string; evidence: string[]; weeklyChangeKg?: number; weeklyChangePercent?: number; averageLoggedCalories?: number }; adherence: { scheduled: number; completed: number; windowDays: number }; policy: string; sources: { name: string; url: string }[] };
 export type SyncState = {
   phase: 'signed-out' | 'synced' | 'syncing' | 'pending' | 'offline' | 'conflict' | 'error' | 'expired';
   pending: number; revision: number; message: string; operations: string[];
@@ -75,6 +112,7 @@ export type AppSnapshot = {
   schedule: ScheduleEntry[]; sessions: WorkoutSession[]; foodEntries: FoodEntry[];
   targets: NutritionTargets[]; checkIns: CheckIn[]; weights: WeightEntry[];
   lessons: Lesson[]; provider: ProviderConfig;
+  goalPlans?: GoalPlan[]; healthEnergy?: HealthEnergy;
 };
 
 export interface TrainingClient {
@@ -87,7 +125,15 @@ export interface TrainingClient {
   signOut(): Promise<void>;
   resetPreview(): Promise<AppSnapshot>;
   updateProfile(patch: Partial<Profile>): Promise<AppSnapshot>;
+  previewGoalPlan(input: GoalAnswers): Promise<GoalPreview>;
+  recommendPrograms(input: TrainingPreferences): Promise<ProgramRecommendations>;
+  reviewProgress(): Promise<ProgressReview>;
+  createGoalPlan(input: CreateGoalPlan): Promise<AppSnapshot>;
+  saveHealthEnergy(input: HealthEnergy | null): Promise<AppSnapshot>;
   saveProgram(program: Program): Promise<AppSnapshot>;
+  importProgram(document: ProgramDocument): Promise<AppSnapshot>;
+  listProgramTemplates(): Promise<ProgramTemplate[]>;
+  publishProgram(document: ProgramDocument, baseRevision: number): Promise<ProgramTemplate>;
   useTemplate(templateId: string): Promise<AppSnapshot>;
   assignWorkout(date: string, workoutId: string | null): Promise<AppSnapshot>;
   startWorkout(workoutId: string, date: string): Promise<AppSnapshot>;
